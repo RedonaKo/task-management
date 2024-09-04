@@ -3,7 +3,7 @@ import { Alert } from "react-native";
 
 const API_KEY = 'AIzaSyC-C5bvScl98C_ocnDaEarrDFPpA7aq_uE';
 
-export async function registerUser(email, password, birthday, city, country, lastName, name) {
+export async function registerUser(email, password, name, lastName, birthday, country, city,) {
     const url = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${API_KEY}`;
 
     try {
