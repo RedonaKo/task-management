@@ -133,7 +133,7 @@ const RegisterScreen = () => {
   const handleSubmit = async () => {
     if (validateInputs()) {
       try {
-        const token = await registerUser(email, password, name, lastName, birthdate.toISOString(), country, city);
+        const token = await registerUser(email, password, name, lastName, birthdate.toISOString(), country, state, city, base64Image);
         if (token) {
           Toast.show({
             type: 'success',
@@ -150,7 +150,7 @@ const RegisterScreen = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-       <Image source={selectedImage ? { uri: selectedImage } : require('../Image/icon1.png')} style={styles.iconImage} />
+       <Image source={selectedImage ? { uri: selectedImage } : require('../assets/Image/icon1.png')} style={styles.iconImage} />
 
       <TouchableOpacity style={styles.chooseImageButton} onPress={handleChoosePhoto}>
         <Text style={styles.buttonText}>Choose Image</Text>

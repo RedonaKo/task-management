@@ -3,7 +3,7 @@ import { Alert } from "react-native";
 
 const API_KEY = 'AIzaSyC-C5bvScl98C_ocnDaEarrDFPpA7aq_uE';
 
-export async function registerUser(email, password, name, lastName, birthday, country, city, base64Image) {
+export async function registerUser(email, password, name, lastName, birthday, country, state, city, base64Image) {
     const url = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${API_KEY}`;
 
     try {
@@ -21,6 +21,7 @@ export async function registerUser(email, password, name, lastName, birthday, co
             Birthday: birthday,
             City: city,
             Country: country,
+            State: state,
             Image: base64Image,
         });
 
@@ -58,7 +59,7 @@ export async function loginUser(email, password) {
 
         console.log("Login Successful. Token:", token);
 
-        // Fetch user data from Realtime Database
+        
         const userResponse = await axios.get(`https://task-menagement-64e90-default-rtdb.firebaseio.com/User/${userId}.json`);
 
         console.log("User data retrieved:", userResponse.data);
