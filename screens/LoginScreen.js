@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Image, StyleSheet, TextInput, TouchableOpacity, Text, ScrollView,Alert } from 'react-native';
+import { View, Image, StyleSheet, TextInput, TouchableOpacity, Text, ScrollView, Alert } from 'react-native';
 import { loginUser } from '../util/firebase';
 
 export default function LoginScreen({ navigation }) {
@@ -7,46 +7,47 @@ export default function LoginScreen({ navigation }) {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
 
-
-    const validateEmail = (email)=>{
+    
+    const validateEmail = (email) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
     };
 
-    const validateForm = () =>{
-        if(!email){
+    const validateForm = () => {
+        if (!email) {
             setError('Email is required');
             return false;
         }
-        if(!validateEmail(email)){
-            setError('Please enter a validate email address.');
+        if (!validateEmail(email)) {
+            setError('Please enter a valid email address.');
             return false;
         }
-        if(!password){
+        if (!password) {
             setError('Password is required');
             return false;
         }
-        if(password.length < 6){
+        if (password.length < 6) {
             setError('Password must be at least 6 characters long');
             return false;
         }
         setError('');
         return true;
-    }
+    };
 
+    
     const handleLogin = async () => {
         if (!validateForm()) return; 
 
         try {
-        const result = await loginUser(email, password);
+            const result = await loginUser(email, password);
 
-        if (result && result.token) { 
-            console.log('Login successful:', result.token);
-            console.log('User data:', result.userData);
-            navigation.navigate('Home'); 
-        } else {
-            Alert.alert('Login failed', 'Please check your credentials and try again.');
-        }
+            if (result && result.token) { 
+                console.log('Login successful:', result.token);
+                console.log('User data:', result.userData);
+                navigation.navigate('Home');
+            } else {
+                Alert.alert('Create a new user ', 'You dont have an account');
+            }
         } catch (error) {
             console.error('Error during login:', error);
             Alert.alert('Login Error', 'An unexpected error occurred. Please try again later.');
@@ -93,7 +94,10 @@ export default function LoginScreen({ navigation }) {
                     <Text style={styles.register}> Register</Text>
                 </Text>
 
-                <Text style={styles.footerText} onPress={() => navigation.navigate('Reset')}>Reset Password</Text>
+                
+                <Text style={styles.footerText} onPress={() => navigation.navigate('Reset')}>
+                    Reset Password
+                </Text>
             </View>
         </ScrollView>
     );
