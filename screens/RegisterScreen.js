@@ -1,31 +1,34 @@
+
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, Image, TextInput, ScrollView, StyleSheet, Modal } from 'react-native';
+import { View, Text, TouchableOpacity, Image, TextInput, ScrollView, StyleSheet, Modal, Alert } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Country, State, City } from 'country-state-city';
 import { Picker } from '@react-native-picker/picker';
+import { registerUser } from '../util/firebase';
+import Toast from 'react-native-toast-message'; 
+import * as ImagePicker from 'expo-image-picker';
+import * as FileSystem from 'expo-file-system'; 
 
-const RegisterScreen = () => {
+const RegisterScreen = ({navigation}) => {
   const countryData = Country.getAllCountries();
   const [country, setCountry] = useState(countryData[0].isoCode);
   const [state, setState] = useState('');
   const [city, setCity] = useState('');
   const [states, setStates] = useState([]);
-
+  const [cities, setCities] = useState([]);
   const [birthdate, setBirthdate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const [showCountryPicker, setShowCountryPicker] = useState(false);
-  const [showStatePicker, setShowStatePicker] = useState(false);
+  const [showCountryPicker, setShowCountryPicker] = useState(false); 
+  const [showStatePicker, setShowStatePicker] = useState(false); 
 
-
- 
   const [name, setName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-
-
   const [errors, setErrors] = useState({});
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [base64Image, setBase64Image] = useState(null); 
 
   useEffect(() => {
     setStates(State.getStatesOfCountry(country));
@@ -44,6 +47,67 @@ const RegisterScreen = () => {
     setShowDatePicker(false);
     if (selectedDate) {
       setBirthdate(selectedDate);
+    } 
+  };
+
+  // Image Picker Handler
+  const handleChoosePhoto = async () => {
+    try {
+      const cameraPermission = await ImagePicker.requestCameraPermissionsAsync();
+      const mediaLibraryPermission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+      if (cameraPermission.status !== 'granted' || mediaLibraryPermission.status !== 'granted') {
+        alert('Permission is required to access the camera and gallery');
+        return;
+      }
+
+      const options = ['Take Photo', 'Choose from Gallery', 'Cancel'];
+      const response = await new Promise((resolve) => {
+        Alert.alert('Select an Option', '', [
+          { text: options[0], onPress: () => resolve('camera') },
+          { text: options[1], onPress: () => resolve('gallery') },
+          { text: options[2], onPress: () => resolve('cancel') },
+        ]);
+      });
+
+      if (response === 'cancel') {
+        return;
+      }
+
+      let result;
+
+      if (response === 'camera') {
+        result = await ImagePicker.launchCameraAsync({
+          mediaTypes: ImagePicker.MediaTypeOptions.All,
+          allowsEditing: true,
+          aspect: [4, 3],
+          quality: 1,
+        });
+      } else if (response === 'gallery') {
+        result = await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ImagePicker.MediaTypeOptions.All,
+          allowsEditing: true,
+          aspect: [4, 3],
+          quality: 1,
+        });
+      }
+
+      if (!result.canceled) {
+        setSelectedImage(result.assets[0].uri);
+        await convertToBase64(result.assets[0].uri);
+      }
+    } catch (error) {
+      console.error('Error picking image:', error.message);
+    }
+  };
+
+  // Convert Image to Base64
+  const convertToBase64 = async (imageUri) => {
+    try {
+      const base64 = await FileSystem.readAsStringAsync(imageUri, { encoding: FileSystem.EncodingType.Base64 });
+      setBase64Image(base64);
+    } catch (error) {
+      console.log('Error converting image to base64:', error.message);
     }
   };
 
@@ -67,18 +131,30 @@ const RegisterScreen = () => {
   };
 
   // Handle submit button 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (validateInputs()) {
-      
-      console.log('Form submitted successfully!');
+      try {
+        const token = await registerUser(email, password, name, lastName, birthdate.toISOString(), country, state, city, base64Image);
+        if (token) {
+          Toast.show({
+            type: 'success',
+            text1: 'Registration Successful!',
+            text2: 'User has been registered successfully.'
+          });
+          console.log('User registered successfully!');
+          navigation.navigate('Home');
+        }
+      } catch (error) {
+        console.error('Error during registration:', error.message);
+      }
     }
   };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Image source={require('../Image/icon1.png')} style={styles.iconImage} />
+       <Image source={selectedImage ? { uri: selectedImage } : require('../assets/Image/icon1.png')} style={styles.iconImage} />
 
-      <TouchableOpacity style={styles.chooseImageButton}>
+      <TouchableOpacity style={styles.chooseImageButton} onPress={handleChoosePhoto}>
         <Text style={styles.buttonText}>Choose Image</Text>
       </TouchableOpacity>
 
@@ -153,7 +229,7 @@ const RegisterScreen = () => {
           onPress={() => setShowStatePicker(true)}
         >
           <Text style={styles.pickerText}>
-            {State.getStateByCodeAndCountry(state, country)?.name || 'Select state'}
+            {State.getStateByCodeAndCountry(state, country)?.name || 'Select city'}
           </Text>
         </TouchableOpacity>
         {showStatePicker && (
@@ -207,8 +283,9 @@ const RegisterScreen = () => {
         {errors.confirmPassword && <Text style={styles.errorText}>{errors.confirmPassword}</Text>}
 
         <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-          <Text style={styles.buttonText}>Submit</Text>
-        </TouchableOpacity>
+        <Text style={styles.buttonText}>Submit</Text>
+         </TouchableOpacity>
+
       </View>
     </ScrollView>
   );
@@ -330,3 +407,5 @@ const styles = StyleSheet.create({
 });
 
 export default RegisterScreen;
+
+

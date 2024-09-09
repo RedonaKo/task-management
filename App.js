@@ -1,44 +1,22 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
+import ResetPw from './screens/ResetPw';
+import HomeScreen from './screens/HomeScreen';
 
-const Stack = createStackNavigator();
+const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator 
-      screenOptions={{
-        headerStyle: {
-          backgroundColor: '#6AC5C8' ,
-          height: 115,
-        },
-        headerTintColor: 'white',
-        contentStyle: {backgroundColor: '#6AC5C8'},
-        headerTitleStyle: { fontSize: 30 },
-        
-      }}  >
-        <Stack.Screen name="Register" component={RegisterScreen}  />
+      <Stack.Navigator initialRouteName="Login">
+        <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen name="Register" component={RegisterScreen} />
+        <Stack.Screen name="Reset" component={ResetPw} />
+        <Stack.Screen name="Home" component={HomeScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  text: {
-    fontSize: 32,
-    color: 'white',
-    backgroundColor : '#6AC5C8',
-    width: 420,
-    height: 148
-  }
-
-});
