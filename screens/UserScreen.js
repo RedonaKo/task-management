@@ -71,7 +71,7 @@ const  UserScreen = ({navigation}) => {
       const handleSubmitButton = async () => {
         if (validateInputs()) {
           try {
-            const token = await registerUser(email, password, name, lastName, birthdate.toISOString(), country, state, city, 'user');
+            const token = await registerUser(email, password, name, lastName, birthdate.toISOString(), country, null, state, city, 'user');
             if (token) {
               Toast.show({
                 type: 'success',
@@ -95,6 +95,7 @@ const  UserScreen = ({navigation}) => {
 
 
     return(
+    
         <ScrollView contentContainerStyle={styles.container} >
             <Text style={styles.text}>Add User</Text>
             <View style={styles.view}>
@@ -112,13 +113,14 @@ const  UserScreen = ({navigation}) => {
           </Text>
         </TouchableOpacity>
 
+
         {showDatePicker && (
-  <Modal
+    <Modal
     transparent={true}
     animationType="slide"
     visible={showDatePicker}
     onRequestClose={() => setShowDatePicker(false)}
-  >
+    >
     <View style={styles.modalContainer}>
       <View style={styles.pickerWrapper}>
         <DateTimePicker
@@ -128,13 +130,9 @@ const  UserScreen = ({navigation}) => {
           onChange={onDateChange}  
         />
       </View>
-    </View>
-  </Modal>
-)}
-
-
-
-
+     </View>
+    </Modal>
+   )}
         <TouchableOpacity
           style={styles.pickerInput}
           onPress={() => setShowCountryPicker(true)}
@@ -205,7 +203,7 @@ const  UserScreen = ({navigation}) => {
         <TextInput placeholder="Email" style={styles.textInput} value={email}  onChangeText={setEmail}></TextInput>
         {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
 
-         <TextInput placeholder="Password" style={styles.textInput} value={password} onChangeText={setPassword}></TextInput>
+         <TextInput placeholder="Password" style={styles.textInput} secureTextEntry value={password} onChangeText={setPassword} ></TextInput>
          {errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
             </View>
 

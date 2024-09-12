@@ -42,6 +42,32 @@ export async function registerUser(email, password, name, lastName, birthday, co
         }
         return null;
     }
+}  
+
+
+// Fetch all users  with role user from Firebase
+export async function fetchUsers(role = "user") {
+    try {
+        const response = await axios.get(`https://task-menagement-64e90-default-rtdb.firebaseio.com/User.json`);
+        const users = response.data;
+
+        if (!users) {
+            console.error('No users found');
+            return [];
+        }
+
+     
+        const userList = Object.keys(users)
+            .map((key) => ({ id: key, ...users[key] }))
+            .filter((user) => user.Role === role);
+
+        console.log('Fetched Users:', userList); 
+        return userList;
+    } catch (error) {
+        console.error('Error fetching users:', error.message);
+        Alert.alert('Error', 'Failed to fetch users. Please try again later.');
+        return [];
+    }
 }
 
 
