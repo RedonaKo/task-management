@@ -5,9 +5,10 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { Country, State, City } from 'country-state-city';
 import { Picker } from '@react-native-picker/picker';
 import { registerUser } from '../util/firebase';
-import Toast from 'react-native-toast-message'; 
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system'; 
+import Toast from 'react-native-toast-message';
+
 
 const RegisterScreen = ({navigation}) => {
   const countryData = Country.getAllCountries();
@@ -49,67 +50,67 @@ const RegisterScreen = ({navigation}) => {
       setBirthdate(selectedDate);
     } 
   };
+ // Image Picker Handler
+ const handleChoosePhoto = async () => {
+  try {
+    const cameraPermission = await ImagePicker.requestCameraPermissionsAsync();
+    const mediaLibraryPermission = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
-  // Image Picker Handler
-  const handleChoosePhoto = async () => {
-    try {
-      const cameraPermission = await ImagePicker.requestCameraPermissionsAsync();
-      const mediaLibraryPermission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (cameraPermission.status !== 'granted' || mediaLibraryPermission.status !== 'granted') {
+      alert('Permission is required to access the camera and gallery');
+      return;
+    }
 
-      if (cameraPermission.status !== 'granted' || mediaLibraryPermission.status !== 'granted') {
-        alert('Permission is required to access the camera and gallery');
-        return;
-      }
+    const options = ['Take Photo', 'Choose from Gallery', 'Cancel'];
+    const response = await new Promise((resolve) => {
+      Alert.alert('Select an Option', '', [
+        { text: options[0], onPress: () => resolve('camera') },
+        { text: options[1], onPress: () => resolve('gallery') },
+        { text: options[2], onPress: () => resolve('cancel') },
+      ]);
+    });
 
-      const options = ['Take Photo', 'Choose from Gallery', 'Cancel'];
-      const response = await new Promise((resolve) => {
-        Alert.alert('Select an Option', '', [
-          { text: options[0], onPress: () => resolve('camera') },
-          { text: options[1], onPress: () => resolve('gallery') },
-          { text: options[2], onPress: () => resolve('cancel') },
-        ]);
+    if (response === 'cancel') {
+      return;
+    }
+
+    let result;
+
+    if (response === 'camera') {
+      result = await ImagePicker.launchCameraAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
       });
-
-      if (response === 'cancel') {
-        return;
-      }
-
-      let result;
-
-      if (response === 'camera') {
-        result = await ImagePicker.launchCameraAsync({
-          mediaTypes: ImagePicker.MediaTypeOptions.All,
-          allowsEditing: true,
-          aspect: [4, 3],
-          quality: 1,
-        });
-      } else if (response === 'gallery') {
-        result = await ImagePicker.launchImageLibraryAsync({
-          mediaTypes: ImagePicker.MediaTypeOptions.All,
-          allowsEditing: true,
-          aspect: [4, 3],
-          quality: 1,
-        });
-      }
-
-      if (!result.canceled) {
-        setSelectedImage(result.assets[0].uri);
-        await convertToBase64(result.assets[0].uri);
-      }
-    } catch (error) {
-      console.error('Error picking image:', error.message);
+    } else if (response === 'gallery') {
+      result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
     }
-  };
 
-  // Convert Image to Base64
-  const convertToBase64 = async (imageUri) => {
-    try {
-      const base64 = await FileSystem.readAsStringAsync(imageUri, { encoding: FileSystem.EncodingType.Base64 });
-      setBase64Image(base64);
-    } catch (error) {
-      console.log('Error converting image to base64:', error.message);
+    if (!result.canceled) {
+      setSelectedImage(result.assets[0].uri);
+      await convertToBase64(result.assets[0].uri);
     }
-  };
+  } catch (error) {
+    console.error('Error picking image:', error.message);
+  }
+};
+
+// Convert Image to Base64
+const convertToBase64 = async (imageUri) => {
+  try {
+    const base64 = await FileSystem.readAsStringAsync(imageUri, { encoding: FileSystem.EncodingType.Base64 });
+    setBase64Image(base64);
+  } catch (error) {
+    console.log('Error converting image to base64:', error.message);
+  }
+};  
+
 
   // Validation
   const validateInputs = () => {
@@ -131,10 +132,10 @@ const RegisterScreen = ({navigation}) => {
   };
 
   // Handle submit button 
-  const handleSubmit = async () => {
+  const handleButtonSubmit = async () => {
     if (validateInputs()) {
       try {
-        const token = await registerUser(email, password, name, lastName, birthdate.toISOString(), country, state, city, base64Image);
+        const token = await registerUser(email, password, name, lastName, birthdate.toISOString(), country, state, city, base64Image, 'admin' );
         if (token) {
           Toast.show({
             type: 'success',
@@ -282,7 +283,7 @@ const RegisterScreen = ({navigation}) => {
         />
         {errors.confirmPassword && <Text style={styles.errorText}>{errors.confirmPassword}</Text>}
 
-        <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+        <TouchableOpacity style={styles.submitButton} onPress={handleButtonSubmit}>
         <Text style={styles.buttonText}>Submit</Text>
          </TouchableOpacity>
 

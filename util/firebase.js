@@ -3,7 +3,7 @@ import { Alert } from "react-native";
 
 const API_KEY = 'AIzaSyC-C5bvScl98C_ocnDaEarrDFPpA7aq_uE';
 
-export async function registerUser(email, password, name, lastName, birthday, country, state, city, base64Image) {
+export async function registerUser(email, password, name, lastName, birthday, country, state, city, base64Image, role) {
     const url = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${API_KEY}`;
 
     try {
@@ -23,6 +23,7 @@ export async function registerUser(email, password, name, lastName, birthday, co
             Country: country,
             State: state,
             Image: base64Image,
+            Role: role
         });
 
         console.log("User data saved in Realtime Database.");
