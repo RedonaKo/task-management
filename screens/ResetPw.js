@@ -65,7 +65,7 @@ export default function ResetPw({ navigation }) {
     return (
         <ScrollView contentContainerStyle={styles.container}>
             <View>
-                <Image style={styles.image} source={require('../assets/image/image.png')} />
+                <Image style={styles.image} source={require('../assets/Image/image.png')} />
             </View>
 
             <View style={styles.container2}>
