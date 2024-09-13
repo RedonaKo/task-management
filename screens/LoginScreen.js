@@ -97,7 +97,7 @@ export default function LoginScreen({ navigation }) {
                 </Text>
 
 
-                <Text style={styles.footerText} onPress={() => navigation.navigate('Tasks')}>
+                <Text style={styles.footerText} onPress={() => navigation.navigate('Reset')}>
                     Reset Password
                 </Text>
             </View>

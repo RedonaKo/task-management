@@ -131,7 +131,7 @@ export const submitTask = async (taskData) => {
         const response = await axios.post(`${FIREBASE_DB_URL}?key=${API_KEY}`, {
             fields: {
                 taskTitle: { stringValue: taskData.taskTitle },
-                UserId: { stringValue: taskData.userId }, // Ensure userId matches the user table ID
+                UserId: { stringValue: taskData.userId },
                 StartDate: { stringValue: format(taskData.startDate, 'yyyy-MM-dd') },
                 EndDate: { stringValue: format(taskData.dueDate, 'yyyy-MM-dd') },
                 Description: { stringValue: taskData.description },
