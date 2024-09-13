@@ -5,6 +5,9 @@ import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
 import ResetPw from './screens/ResetPw';
 import HomeScreen from './screens/HomeScreen';
+import Tasks from './screens/Tasks';
+import AddTask from './screens/AddTask';
+
 
 const Stack = createNativeStackNavigator();
 
@@ -16,6 +19,8 @@ export default function App() {
         <Stack.Screen name="Register" component={RegisterScreen} />
         <Stack.Screen name="Reset" component={ResetPw} />
         <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name='Tasks' component={Tasks} />
+        <Stack.Screen name='Task' component={AddTask} />
       </Stack.Navigator>
     </NavigationContainer>
   );

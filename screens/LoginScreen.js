@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import { View, Image, StyleSheet, TextInput, TouchableOpacity, Text, ScrollView, Alert } from 'react-native';
 import { loginUser } from '../util/firebase';
 
+
+
 export default function LoginScreen({ navigation }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
 
-    
+
     const validateEmail = (email) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
@@ -34,14 +36,14 @@ export default function LoginScreen({ navigation }) {
         return true;
     };
 
-    
+
     const handleLogin = async () => {
-        if (!validateForm()) return; 
+        if (!validateForm()) return;
 
         try {
             const result = await loginUser(email, password);
 
-            if (result && result.token) { 
+            if (result && result.token) {
                 console.log('Login successful:', result.token);
                 console.log('User data:', result.userData);
                 navigation.navigate('Home');
@@ -94,8 +96,8 @@ export default function LoginScreen({ navigation }) {
                     <Text style={styles.register}> Register</Text>
                 </Text>
 
-                
-                <Text style={styles.footerText} onPress={() => navigation.navigate('Reset')}>
+
+                <Text style={styles.footerText} onPress={() => navigation.navigate('Tasks')}>
                     Reset Password
                 </Text>
             </View>
