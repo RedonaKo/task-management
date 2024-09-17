@@ -7,7 +7,7 @@ import { format } from 'date-fns';
 import { submitTask } from '../util/firebase';
 import { useNavigation } from '@react-navigation/native';
 
-const TaskForm = () => {
+export const TaskForm = () => {
     const [taskTitle, setTaskTitle] = useState('');
     const [user, setUser] = useState('');
     const [startDate, setStartDate] = useState(new Date());
@@ -81,6 +81,7 @@ const TaskForm = () => {
         };
         loadUsers();
     }, []);
+
 
     return (
         <View style={styles.container}>
@@ -178,20 +179,22 @@ const TaskForm = () => {
     );
 };
 
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#f5f5f5',
     },
     header: {
-        fontSize: 24,
+        marginTop: 30,
+        fontSize: 30,
         fontWeight: 'bold',
         paddingVertical: 10,
         textAlign: 'center',
         marginBottom: 20,
     },
     form: {
-        backgroundColor: '#00ACC1',
+        backgroundColor: '#6AC5C8',
         alignItems: 'center',
         borderRadius: 15,
         marginHorizontal: 15,
