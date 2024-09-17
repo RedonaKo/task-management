@@ -1,13 +1,16 @@
-import React, { useState } from 'react';
-import { View, Image, StyleSheet, TextInput, TouchableOpacity, Text, ScrollView, Alert } from 'react-native';
-import { loginUser } from '../util/firebase';
+import React, { useState, useContext } from 'react';
+import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet, ScrollView, Image } from 'react-native';
+import { AuthContext } from '../context/authContext';
+import { loginUser, getUserData } from '../util/firebase';
+import { useNavigation } from '@react-navigation/native';
 
-export default function LoginScreen({ navigation }) {
+export default function LoginScreen() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const { signIn } = useContext(AuthContext);
+    const navigation = useNavigation();
 
-    
     const validateEmail = (email) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
@@ -34,25 +37,42 @@ export default function LoginScreen({ navigation }) {
         return true;
     };
 
-    
-    const handleLogin = async () => {
-        if (!validateForm()) return; 
+  const handleLogin = async () => {
+    if (!validateForm()) return;
 
-        try {
-            const result = await loginUser(email, password);
+    try {
+        const result = await loginUser(email, password);
+        if (result && result.token) {
+            const { userData } = result;
+            const { role, Name, LastName } = userData;
 
-            if (result && result.token) { 
-                console.log('Login successful:', result.token);
-                console.log('User data:', result.userData);
-                navigation.navigate('Home');
+            // Debugging logs
+            console.log('User data fetched:', userData);
+            console.log('Role:', role);
+            console.log('Name:', Name);
+            console.log('LastName:', LastName);
+
+            // Ensure Name and LastName are passed to signIn
+            if (Name && LastName) {
+                await signIn(result.token, role, Name, LastName);
+                if (role === 'admin') {
+                    navigation.navigate('AdminHome',  { name: Name, lastName: LastName });
+                } else {
+                    navigation.navigate('Users Page', { name: Name, lastName: LastName });
+                }
             } else {
-                Alert.alert('Create a new user ', 'You dont have an account');
+                console.error('Name or LastName is undefined.');
+                Alert.alert('Login Error', 'User name or last name is missing.');
             }
-        } catch (error) {
-            console.error('Error during login:', error);
-            Alert.alert('Login Error', 'An unexpected error occurred. Please try again later.');
+        } else {
+            Alert.alert('Error', 'Unable to login. Please check your credentials.');
         }
-    };
+    } catch (error) {
+        console.error('Error during login:', error);
+        Alert.alert('Login Error', 'An unexpected error occurred. Please try again later.');
+    }
+};
+
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
@@ -62,11 +82,10 @@ export default function LoginScreen({ navigation }) {
                     source={require('../assets/Image/image.png')}
                 />
             </View>
-
             <View style={styles.container2}>
                 <TextInput
                     style={styles.emailInput}
-                    placeholder='Email'
+                    placeholder="Email"
                     value={email}
                     onChangeText={setEmail}
                     keyboardType="email-address"
@@ -75,25 +94,21 @@ export default function LoginScreen({ navigation }) {
                 />
                 <TextInput
                     style={styles.passwordInput}
-                    placeholder='Password'
+                    placeholder="Password"
                     value={password}
                     onChangeText={setPassword}
                     autoCapitalize="none"
                     autoCorrect={false}
                     secureTextEntry
                 />
-
                 <TouchableOpacity style={styles.btn} onPress={handleLogin}>
                     <Text style={styles.txt}>Login</Text>
                 </TouchableOpacity>
-
                 {error ? <Text style={styles.error}>{error}</Text> : null}
-
                 <Text style={styles.accText} onPress={() => navigation.navigate('Register')}>
                     Don't Have Account?
                     <Text style={styles.register}> Register</Text>
                 </Text>
-
                 
                 <Text style={styles.footerText} onPress={() => navigation.navigate('Reset')}>
                     Reset Password

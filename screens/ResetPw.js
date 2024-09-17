@@ -65,7 +65,7 @@ export default function ResetPw({ navigation }) {
     return (
         <ScrollView contentContainerStyle={styles.container}>
             <View>
-                <Image style={styles.image} source={require('../assets/image/image.png')} />
+                <Image style={styles.image} source={require('../assets/Image/image.png')} />
             </View>
 
             <View style={styles.container2}>
@@ -106,9 +106,9 @@ export default function ResetPw({ navigation }) {
                     onChangeText={setConfirmPassword}
                 />
 
-                < TouchableOpacity style={styles.btn} onPress={handleResetPassword}>
+                <TouchableOpacity style={styles.btn} onPress={handleResetPassword}>
                     <Text style={styles.txt}>Reset</Text>
-                </TouchableOpacity >
+                </TouchableOpacity>
 
             </View>
         </ScrollView>

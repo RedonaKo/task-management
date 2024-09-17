@@ -1,9 +1,11 @@
 import axios from "axios";
 import { Alert } from "react-native";
+import jwtDecode from "jwt-decode";
 
 const API_KEY = 'AIzaSyC-C5bvScl98C_ocnDaEarrDFPpA7aq_uE';
 
-export async function registerUser(email, password, name, lastName, birthday, country, state, city, base64Image) {
+// Function to register a user
+export async function registerUser(email, password, name, lastName, birthday, city, country, role) {
     const url = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${API_KEY}`;
 
     try {
@@ -15,14 +17,14 @@ export async function registerUser(email, password, name, lastName, birthday, co
 
         const userId = response.data.localId;
 
+        // Save user data in Firebase Realtime Database
         await axios.put(`https://task-menagement-64e90-default-rtdb.firebaseio.com/User/${userId}.json`, {
             Name: name,
             LastName: lastName,
             Birthday: birthday,
             City: city,
             Country: country,
-            State: state,
-            Image: base64Image,
+            Role: role
         });
 
         console.log("User data saved in Realtime Database.");
@@ -43,7 +45,7 @@ export async function registerUser(email, password, name, lastName, birthday, co
     }
 }
 
-
+// Function to login a user
 export async function loginUser(email, password) {
     const url = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${API_KEY}`;
 
@@ -59,14 +61,24 @@ export async function loginUser(email, password) {
 
         console.log("Login Successful. Token:", token);
 
-        
+        // Fetch user data from Firebase Realtime Database
         const userResponse = await axios.get(`https://task-menagement-64e90-default-rtdb.firebaseio.com/User/${userId}.json`);
 
         console.log("User data retrieved:", userResponse.data);
 
+        const userData = userResponse.data;
+        const role = userData.Role || 'user';
+        const name = userData.Name;
+        const lastName = userData.LastName;
+
+        console.log("Name", name, "Lastname", lastName);
+
         return {
             token,
-            userData: userResponse.data
+            userData: {
+               ...userData,
+                role,
+            },
         };
     } catch (error) {
         if (error.response && error.response.data && error.response.data.error) {
@@ -80,3 +92,14 @@ export async function loginUser(email, password) {
         return null;
     }
 }
+
+// Function to get JWT payload
+export const getJwtPayload = (token) => {
+    try {
+        const decoded = jwtDecode(token);
+        const role = decoded.role;
+        return { decoded, role };
+    } catch (error) {
+        return { decoded: null, role: null };
+    }
+};
