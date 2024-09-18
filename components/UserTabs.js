@@ -1,8 +1,8 @@
-import { BottomTabView, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import React, { useContext } from 'react';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import TasksScreen from '../screens/TasksScreen';
+import Tasks from '../screens/Tasks';
 import ReportScreen from '../screens/ReportScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import DoneTaskScreen from '../screens/DoneTasksScreen';
@@ -66,7 +66,7 @@ const BottomTab = () => (
       tabBarInactiveTintColor: 'black',
     })}
   >
-    <Tab.Screen name="Tasks" component={TasksScreen} />
+    <Tab.Screen name="Tasks" component={Tasks} />
     <Tab.Screen name="Done Task" component={DoneTaskScreen} />
     <Tab.Screen name="Profile" component={ProfileScreen} />
     <Tab.Screen name="Report" component={ReportScreen} />

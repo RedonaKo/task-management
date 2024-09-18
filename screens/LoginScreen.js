@@ -4,23 +4,13 @@ import { AuthContext } from '../context/authContext';
 import { loginUser, getUserData } from '../util/firebase';
 import { useNavigation } from '@react-navigation/native';
 
-<<<<<<< HEAD
 export default function LoginScreen() {
-=======
-
-
-export default function LoginScreen({ navigation }) {
->>>>>>> b25eede33f84dffeca381363404bb4bca567acbe
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const { signIn } = useContext(AuthContext);
     const navigation = useNavigation();
 
-<<<<<<< HEAD
-=======
-
->>>>>>> b25eede33f84dffeca381363404bb4bca567acbe
     const validateEmail = (email) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
@@ -47,14 +37,8 @@ export default function LoginScreen({ navigation }) {
         return true;
     };
 
-<<<<<<< HEAD
   const handleLogin = async () => {
     if (!validateForm()) return;
-=======
-
-    const handleLogin = async () => {
-        if (!validateForm()) return;
->>>>>>> b25eede33f84dffeca381363404bb4bca567acbe
 
     try {
         const result = await loginUser(email, password);
@@ -62,7 +46,6 @@ export default function LoginScreen({ navigation }) {
             const { userData } = result;
             const { role, Name, LastName } = userData;
 
-<<<<<<< HEAD
             // Debugging logs
             console.log('User data fetched:', userData);
             console.log('Role:', role);
@@ -77,14 +60,7 @@ export default function LoginScreen({ navigation }) {
                 } else {
                     navigation.navigate('Users Page', { name: Name, lastName: LastName });
                 }
-=======
-            if (result && result.token) {
-                console.log('Login successful:', result.token);
-                console.log('User data:', result.userData);
-                navigation.navigate('Home');
->>>>>>> b25eede33f84dffeca381363404bb4bca567acbe
             } else {
-                console.error('Name or LastName is undefined.');
                 Alert.alert('Login Error', 'User name or last name is missing.');
             }
         } else {
@@ -132,12 +108,7 @@ export default function LoginScreen({ navigation }) {
                     Don't Have Account?
                     <Text style={styles.register}> Register</Text>
                 </Text>
-<<<<<<< HEAD
                 
-=======
-
-
->>>>>>> b25eede33f84dffeca381363404bb4bca567acbe
                 <Text style={styles.footerText} onPress={() => navigation.navigate('Reset')}>
                     Reset Password
                 </Text>

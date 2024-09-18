@@ -5,15 +5,10 @@ import { AuthProvider } from './context/authContext';
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
 import ResetPw from './screens/ResetPw';
-<<<<<<< HEAD
 import AdminTabs from './components/AdminTabs';
 import UserTabs from './components/UserTabs';
-=======
-import HomeScreen from './screens/HomeScreen';
-
-
-
->>>>>>> b25eede33f84dffeca381363404bb4bca567acbe
+import AddTask from './screens/AddTask';
+import TaskDetails from './screens/TaskDetails';
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -38,6 +33,8 @@ export default function App() {
                   }}
                 />
                 <Stack.Screen name="Reset" component={ResetPw}/>
+                <Stack.Screen name="AddTask" component={AddTask}/>
+                <Stack.Screen name='TaskDetails' component={TaskDetails}/>
             </Stack.Navigator>
         </NavigationContainer>
     </AuthProvider>

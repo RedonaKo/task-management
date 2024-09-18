@@ -80,13 +80,26 @@ function TaskList() {
         <View style={styles.container}>
             <FlatList
                 data={tasks}
-                renderItem={({ item }) => <TaskItem task={item} />}
+                renderItem={({ item }) => <TouchableOpacity
+                    onPress={() => {
+                        navigation.navigate('TaskDetails', {
+                            title: item.taskTitle,
+                            assignedTo: item.assignedTo,
+                            StartDate: item.startDate,
+                            EndDate: item.dueDate,
+                            Status: item.status,
+                            Description: item.description
+
+                        })
+                    }}>
+                    <TaskItem task={item} />
+                </TouchableOpacity>}
                 keyExtractor={item => item.id}
             />
-            <TouchableOpacity style={styles.fab} onPress={() => { navigation.navigate('Task') }}>
+            <TouchableOpacity style={styles.fab} onPress={() => { navigation.navigate('AddTask') }}>
                 <Text style={styles.fabText}>+</Text>
             </TouchableOpacity>
-        </View>
+        </View >
     );
 };
 

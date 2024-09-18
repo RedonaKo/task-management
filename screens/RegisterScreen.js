@@ -4,16 +4,9 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { Country, State, City } from 'country-state-city';
 import { Picker } from '@react-native-picker/picker';
 import { registerUser } from '../util/firebase';
-<<<<<<< HEAD
-import * as ImagePicker from 'expo-image-picker';
-import * as FileSystem from 'expo-file-system'; 
-import Toast from 'react-native-toast-message';
-
-=======
 import Toast from 'react-native-toast-message';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
->>>>>>> b25eede33f84dffeca381363404bb4bca567acbe
 
 const RegisterScreen = ({ navigation }) => {
   const countryData = Country.getAllCountries();
@@ -24,14 +17,8 @@ const RegisterScreen = ({ navigation }) => {
   const [cities, setCities] = useState([]);
   const [birthdate, setBirthdate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
-<<<<<<< HEAD
-  const [showCountryPicker, setShowCountryPicker] = useState(false); 
   const [showStatePicker, setShowStatePicker] = useState(false); 
-=======
-  const [showCountryPicker, setShowCountryPicker] = useState(false);
-  const [showStatePicker, setShowStatePicker] = useState(false);
 
->>>>>>> b25eede33f84dffeca381363404bb4bca567acbe
   const [name, setName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
@@ -39,13 +26,9 @@ const RegisterScreen = ({ navigation }) => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errors, setErrors] = useState({});
   const [selectedImage, setSelectedImage] = useState(null);
-<<<<<<< HEAD
-  const [base64Image, setBase64Image] = useState(null); 
-  
-=======
+
   const [base64Image, setBase64Image] = useState(null);
 
->>>>>>> b25eede33f84dffeca381363404bb4bca567acbe
   useEffect(() => {
     setStates(State.getStatesOfCountry(country));
     setState('');
@@ -63,6 +46,7 @@ const RegisterScreen = ({ navigation }) => {
       setBirthdate(selectedDate);
     }
   };
+  
  // Image Picker Handler
  const handleChoosePhoto = async () => {
   try {
@@ -150,12 +134,8 @@ const convertToBase64 = async (imageUri) => {
   };
   return (
     <ScrollView contentContainerStyle={styles.container}>
-<<<<<<< HEAD
        <Image source={selectedImage ? { uri: selectedImage } : require('../assets/Image/icon1.png')} style={styles.iconImage} />
-=======
-      <Image source={selectedImage ? { uri: selectedImage } : require('../assets/Image/icon1.png')} style={styles.iconImage} />
 
->>>>>>> b25eede33f84dffeca381363404bb4bca567acbe
       <TouchableOpacity style={styles.chooseImageButton} onPress={handleChoosePhoto}>
         <Text style={styles.buttonText}>Choose Image</Text>
       </TouchableOpacity>
@@ -275,16 +255,13 @@ const convertToBase64 = async (imageUri) => {
           onChangeText={setConfirmPassword}
         />
         {errors.confirmPassword && <Text style={styles.errorText}>{errors.confirmPassword}</Text>}
-<<<<<<< HEAD
         <TouchableOpacity style={styles.submitButton} onPress={handleButtonSubmit}>
         <Text style={styles.buttonText}>Submit</Text>
          </TouchableOpacity>
-=======
 
         <TouchableOpacity style={styles.submitButton} onPress={(handleSubmit) => navigation.navigate('Home')}>
           <Text style={styles.buttonText}>Submit</Text>
         </TouchableOpacity>
->>>>>>> b25eede33f84dffeca381363404bb4bca567acbe
       </View>
     </ScrollView>
   );

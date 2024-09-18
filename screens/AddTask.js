@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, ActivityIndicator, Modal } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, ActivityIndicator, Modal, ScrollView  } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { fetchUsersInput } from '../util/firebase';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -7,7 +7,7 @@ import { format } from 'date-fns';
 import { submitTask } from '../util/firebase';
 import { useNavigation } from '@react-navigation/native';
 
-const TaskForm = () => {
+export const TaskForm = () => {
     const [taskTitle, setTaskTitle] = useState('');
     const [user, setUser] = useState('');
     const [startDate, setStartDate] = useState(new Date());
@@ -83,98 +83,100 @@ const TaskForm = () => {
     }, []);
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.header}>Add Task</Text>
-            <View style={styles.form}>
-                <TextInput
-                    placeholder='Task Title'
-                    value={taskTitle}
-                    onChangeText={setTaskTitle}
-                    style={styles.inputTitle}
-                />
+        <ScrollView>    
+            <View style={styles.container}>
+                <Text style={styles.header}>Add Task</Text>
+                <View style={styles.form}>
+                    <TextInput
+                        placeholder='Task Title'
+                        value={taskTitle}
+                        onChangeText={setTaskTitle}
+                        style={styles.inputTitle}
+                    />
 
-                <TouchableOpacity style={styles.inputUser} onPress={() => setShowUserPicker(true)}>
-                    <Text style={user ? styles.userText : styles.placeholderText}>
-                        {user ? users.find(u => u.id === user)?.Name : 'Select User'}
-                    </Text>
-                </TouchableOpacity>
+                    <TouchableOpacity style={styles.inputUser} onPress={() => setShowUserPicker(true)}>
+                        <Text style={user ? styles.userText : styles.placeholderText}>
+                            {user ? users.find(u => u.id === user)?.Name : 'Select User'}
+                        </Text>
+                    </TouchableOpacity>
 
-                {showUserPicker && (
-                    <Modal
-                        transparent={true}
-                        animationType='slide'
-                        visible={showUserPicker}
-                        onRequestClose={() => setShowUserPicker(false)}
-                    >
-                        <View style={styles.modalContainer}>
-                            <View style={styles.pickerContainer}>
-                                {loading ? (
-                                    <ActivityIndicator size="large" color="#00796B" />
-                                ) : (
-                                    <Picker
-                                        selectedValue={user}
-                                        style={styles.picker}
-                                        onValueChange={(itemValue) => {
-                                            setUser(itemValue);
-                                            setShowUserPicker(false);
-                                        }}
-                                    >
-                                        {users.map((item) => (
-                                            <Picker.Item key={item.id} label={`${item.Name} ${item.LastName}`} value={item.id} />
-                                        ))}
-                                    </Picker>
-                                )}
-                                <TouchableOpacity onPress={() => setShowUserPicker(false)} style={styles.closeButton}>
-                                    <Text style={styles.closeButtonText}>Close</Text>
-                                </TouchableOpacity>
+                    {showUserPicker && (
+                        <Modal
+                            transparent={true}
+                            animationType='slide'
+                            visible={showUserPicker}
+                            onRequestClose={() => setShowUserPicker(false)}
+                        >
+                            <View style={styles.modalContainer}>
+                                <View style={styles.pickerContainer}>
+                                    {loading ? (
+                                        <ActivityIndicator size="large" color="#00796B" />
+                                    ) : (
+                                        <Picker
+                                            selectedValue={user}
+                                            style={styles.picker}
+                                            onValueChange={(itemValue) => {
+                                                setUser(itemValue);
+                                                setShowUserPicker(false);
+                                            }}
+                                        >
+                                            {users.map((item) => (
+                                                <Picker.Item key={item.id} label={`${item.Name} ${item.LastName}`} value={item.id} />
+                                            ))}
+                                        </Picker>
+                                    )}
+                                    <TouchableOpacity onPress={() => setShowUserPicker(false)} style={styles.closeButton}>
+                                        <Text style={styles.closeButtonText}>Close</Text>
+                                    </TouchableOpacity>
+                                </View>
                             </View>
-                        </View>
-                    </Modal>
-                )}
+                        </Modal>
+                    )}
 
-                <TouchableOpacity style={styles.inputUser} onPress={() => setShowStartDatePicker(true)}>
-                    <Text style={startDate ? styles.userText : styles.placeholderText}>
-                        {format(startDate, 'dd/MM/yyyy') || 'Select Start Date'}
-                    </Text>
-                </TouchableOpacity>
+                    <TouchableOpacity style={styles.inputUser} onPress={() => setShowStartDatePicker(true)}>
+                        <Text style={startDate ? styles.userText : styles.placeholderText}>
+                            {format(startDate, 'dd/MM/yyyy') || 'Select Start Date'}
+                        </Text>
+                    </TouchableOpacity>
 
-                {showStartDatePicker && (
-                    <DateTimePicker
-                        value={startDate}
-                        mode='date'
-                        display='default'
-                        onChange={(event, selectedDate) => handleDateChange(event, selectedDate, setStartDate)}
+                    {showStartDatePicker && (
+                        <DateTimePicker
+                            value={startDate}
+                            mode='date'
+                            display='default'
+                            onChange={(event, selectedDate) => handleDateChange(event, selectedDate, setStartDate)}
+                        />
+                    )}
+
+                    <TouchableOpacity style={styles.inputUser} onPress={() => setShowDueDatePicker(true)}>
+                        <Text style={dueDate ? styles.userText : styles.placeholderText}>
+                            {format(dueDate, 'dd/MM/yyyy') || 'Select Due Date'}
+                        </Text>
+                    </TouchableOpacity>
+
+                    {showDueDatePicker && (
+                        <DateTimePicker
+                            value={dueDate}
+                            mode='date'
+                            display='default'
+                            onChange={(event, selectedDate) => handleDateChange(event, selectedDate, setDueDate)}
+                        />
+                    )}
+
+                    <TextInput
+                        style={[styles.input, styles.textArea]}
+                        placeholder="Description"
+                        value={description}
+                        onChangeText={setDescription}
+                        multiline
                     />
-                )}
 
-                <TouchableOpacity style={styles.inputUser} onPress={() => setShowDueDatePicker(true)}>
-                    <Text style={dueDate ? styles.userText : styles.placeholderText}>
-                        {format(dueDate, 'dd/MM/yyyy') || 'Select Due Date'}
-                    </Text>
-                </TouchableOpacity>
-
-                {showDueDatePicker && (
-                    <DateTimePicker
-                        value={dueDate}
-                        mode='date'
-                        display='default'
-                        onChange={(event, selectedDate) => handleDateChange(event, selectedDate, setDueDate)}
-                    />
-                )}
-
-                <TextInput
-                    style={[styles.input, styles.textArea]}
-                    placeholder="Description"
-                    value={description}
-                    onChangeText={setDescription}
-                    multiline
-                />
-
-                <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-                    <Text style={styles.submitButtonText}>Submit</Text>
-                </TouchableOpacity>
+                    <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+                        <Text style={styles.submitButtonText}>Submit</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
-        </View>
+        </ScrollView>
     );
 };
 
@@ -189,9 +191,10 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         textAlign: 'center',
         marginBottom: 20,
+        marginTop:60,
     },
     form: {
-        backgroundColor: '#00ACC1',
+        backgroundColor: '#6AC5C8',
         alignItems: 'center',
         borderRadius: 15,
         marginHorizontal: 15,

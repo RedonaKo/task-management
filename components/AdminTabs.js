@@ -1,5 +1,5 @@
 import React from 'react';
-import TasksScreen from '../screens/TasksScreen';
+import Tasks from '../screens/Tasks';
 import UserScreen from '../screens/UserScreen';
 import ReportScreen from '../screens/ReportScreen';
 import {createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -62,7 +62,7 @@ const BottomTabs = () => (
             tabBarInactiveTintColor: 'black',
         })}
     >
-        <Tab.Screen name="Tasks" component={TasksScreen} />
+        <Tab.Screen name="Tasks" component={Tasks} />
         <Tab.Screen name="Users" component={UserScreen} />
         <Tab.Screen name="Reports" component={ReportScreen} />
     </Tab.Navigator>
