@@ -82,6 +82,7 @@ export const TaskForm = () => {
         loadUsers();
     }, []);
 
+
     return (
         <ScrollView>    
             <View style={styles.container}>
@@ -180,13 +181,15 @@ export const TaskForm = () => {
     );
 };
 
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#f5f5f5',
     },
     header: {
-        fontSize: 24,
+        marginTop: 30,
+        fontSize: 30,
         fontWeight: 'bold',
         paddingVertical: 10,
         textAlign: 'center',
