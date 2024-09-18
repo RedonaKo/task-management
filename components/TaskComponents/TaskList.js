@@ -99,7 +99,7 @@ function TaskList() {
             <TouchableOpacity style={styles.fab} onPress={() => { navigation.navigate('AddTask') }}>
                 <Text style={styles.fabText}>+</Text>
             </TouchableOpacity>
-        </View >
+        </View>
     );
 };
 
