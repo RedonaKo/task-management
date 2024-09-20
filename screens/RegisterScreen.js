@@ -1,10 +1,10 @@
-
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, Image, TextInput, ScrollView, StyleSheet, Modal, Alert } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Country, State, City } from 'country-state-city';
 import { Picker } from '@react-native-picker/picker';
 import { registerUser } from '../util/firebase';
+<<<<<<< HEAD
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system'; 
 import Toast from 'react-native-toast-message';
@@ -30,6 +30,22 @@ const RegisterScreen = ({navigation}) => {
   const [cities, setCities] = useState([]);
 
   
+=======
+import Toast from 'react-native-toast-message';
+import * as ImagePicker from 'expo-image-picker';
+import * as FileSystem from 'expo-file-system';
+
+const RegisterScreen = ({ navigation }) => {
+  const countryData = Country.getAllCountries();
+  const [country, setCountry] = useState(countryData[0].isoCode);
+  const [state, setState] = useState('');
+  const [city, setCity] = useState('');
+  const [states, setStates] = useState([]);
+  const [cities, setCities] = useState([]);
+  const [birthdate, setBirthdate] = useState(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showStatePicker, setShowStatePicker] = useState(false); 
+>>>>>>> db18a6374973321bdfe974b285431097f6ba5211
 
   const [name, setName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -38,16 +54,32 @@ const RegisterScreen = ({navigation}) => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errors, setErrors] = useState({});
   const [selectedImage, setSelectedImage] = useState(null);
-  const [base64Image, setBase64Image] = useState(null); 
 
+  const [base64Image, setBase64Image] = useState(null);
+
+<<<<<<< HEAD
  
 
+=======
+  useEffect(() => {
+    setStates(State.getStatesOfCountry(country));
+    setState('');
+    setCity('');
+  }, [country]);
+  useEffect(() => {
+    if (state) {
+      setCities(City.getCitiesOfState(country, state));
+      setCity('');
+    }
+  }, [state]);
+>>>>>>> db18a6374973321bdfe974b285431097f6ba5211
   const onDateChange = (event, selectedDate) => {
     setShowDatePicker(false);
     if (selectedDate) {
       setBirthdate(selectedDate);
-    } 
+    }
   };
+<<<<<<< HEAD
 
   useEffect(() => {
     const stateData = State.getStatesOfCountry(country);
@@ -66,18 +98,26 @@ const RegisterScreen = ({navigation}) => {
     }
   }, [state]);
   
+=======
+>>>>>>> db18a6374973321bdfe974b285431097f6ba5211
   
  // Image Picker Handler
  const handleChoosePhoto = async () => {
   try {
     const cameraPermission = await ImagePicker.requestCameraPermissionsAsync();
     const mediaLibraryPermission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+<<<<<<< HEAD
 
+=======
+>>>>>>> db18a6374973321bdfe974b285431097f6ba5211
     if (cameraPermission.status !== 'granted' || mediaLibraryPermission.status !== 'granted') {
       alert('Permission is required to access the camera and gallery');
       return;
     }
+<<<<<<< HEAD
 
+=======
+>>>>>>> db18a6374973321bdfe974b285431097f6ba5211
     const options = ['Take Photo', 'Choose from Gallery', 'Cancel'];
     const response = await new Promise((resolve) => {
       Alert.alert('Select an Option', '', [
@@ -86,6 +126,7 @@ const RegisterScreen = ({navigation}) => {
         { text: options[2], onPress: () => resolve('cancel') },
       ]);
     });
+<<<<<<< HEAD
 
     if (response === 'cancel') {
       return;
@@ -93,6 +134,12 @@ const RegisterScreen = ({navigation}) => {
 
     let result;
 
+=======
+    if (response === 'cancel') {
+      return;
+    }
+    let result;
+>>>>>>> db18a6374973321bdfe974b285431097f6ba5211
     if (response === 'camera') {
       result = await ImagePicker.launchCameraAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -108,7 +155,10 @@ const RegisterScreen = ({navigation}) => {
         quality: 1,
       });
     }
+<<<<<<< HEAD
 
+=======
+>>>>>>> db18a6374973321bdfe974b285431097f6ba5211
     if (!result.canceled) {
       setSelectedImage(result.assets[0].uri);
       await convertToBase64(result.assets[0].uri);
@@ -117,7 +167,10 @@ const RegisterScreen = ({navigation}) => {
     console.error('Error picking image:', error.message);
   }
 };
+<<<<<<< HEAD
 
+=======
+>>>>>>> db18a6374973321bdfe974b285431097f6ba5211
 // Convert Image to Base64
 const convertToBase64 = async (imageUri) => {
   try {
@@ -127,27 +180,24 @@ const convertToBase64 = async (imageUri) => {
     console.log('Error converting image to base64:', error.message);
   }
 };  
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> db18a6374973321bdfe974b285431097f6ba5211
   // Validation
   const validateInputs = () => {
     const newErrors = {};
-
     if (!name.trim()) newErrors.name = 'Name is required';
     if (!lastName.trim()) newErrors.lastName = 'Last name is required';
     if (!email.trim()) newErrors.email = 'Email is required';
     else if (!/\S+@\S+\.\S+/.test(email)) newErrors.email = 'Email is not valid';
-
     if (!password.trim()) newErrors.password = 'Password is required';
     else if (password.length < 6) newErrors.password = 'Password must be at least 6 characters long';
-
     if (password !== confirmPassword) newErrors.confirmPassword = 'Passwords do not match';
-
     setErrors(newErrors);
-
     return Object.keys(newErrors).length === 0;
   };
-
   // Handle submit button 
   const handleButtonSubmit = async () => {
     if (validateInputs()) {
@@ -160,14 +210,17 @@ const convertToBase64 = async (imageUri) => {
             text2: 'User has been registered successfully.'
           });
           console.log('User registered successfully!');
+<<<<<<< HEAD
           navigation.navigate('Home');
+=======
+          navigation.navigate('AdminHome');
+>>>>>>> db18a6374973321bdfe974b285431097f6ba5211
         }
       } catch (error) {
         console.error('Error during registration:', error.message);
       }
     }
   };
-
   return (
     <ScrollView contentContainerStyle={styles.container}>
        <Image source={selectedImage ? { uri: selectedImage } : require('../assets/Image/icon1.png')} style={styles.iconImage} />
@@ -175,7 +228,6 @@ const convertToBase64 = async (imageUri) => {
       <TouchableOpacity style={styles.chooseImageButton} onPress={handleChoosePhoto}>
         <Text style={styles.buttonText}>Choose Image</Text>
       </TouchableOpacity>
-
       <View style={styles.view}>
         <TextInput
           style={styles.inputName}
@@ -184,7 +236,6 @@ const convertToBase64 = async (imageUri) => {
           onChangeText={setName}
         />
         {errors.name && <Text style={styles.errorText}>{errors.name}</Text>}
-
         <TextInput
           style={styles.input}
           placeholder="Last Name"
@@ -192,7 +243,6 @@ const convertToBase64 = async (imageUri) => {
           onChangeText={setLastName}
         />
         {errors.lastName && <Text style={styles.errorText}>{errors.lastName}</Text>}
-
         <TouchableOpacity
           style={styles.dateInput}
           onPress={() => setShowDatePicker(true)}
@@ -209,8 +259,15 @@ const convertToBase64 = async (imageUri) => {
             onChange={onDateChange}
           />
         )}
+<<<<<<< HEAD
 
      <TouchableOpacity style={styles.pickerInput} onPress={() => setShowCountryPicker(true)}>
+=======
+        <TouchableOpacity
+          style={styles.pickerInput}
+          onPress={() => setShowCountryPicker(true)}
+        >
+>>>>>>> db18a6374973321bdfe974b285431097f6ba5211
           <Text style={styles.pickerText}>
             {Country.getCountryByCode(country)?.name || 'Select Country'}
           </Text>
@@ -229,6 +286,7 @@ const convertToBase64 = async (imageUri) => {
             </View>
           </Modal>
         )}
+<<<<<<< HEAD
 
  
         {states.length > 0 && (
@@ -236,6 +294,14 @@ const convertToBase64 = async (imageUri) => {
           <TouchableOpacity style={styles.pickerInput} onPress={() => setShowStatePicker(true)}>
           <Text style={styles.pickerText}>
             {state ? State.getStateByCodeAndCountry(state, country)?.name : 'Select State'}
+=======
+        <TouchableOpacity
+          style={styles.pickerInput}
+          onPress={() => setShowStatePicker(true)}
+        >
+          <Text style={styles.pickerText}>
+            {State.getStateByCodeAndCountry(state, country)?.name || 'Select city'}
+>>>>>>> db18a6374973321bdfe974b285431097f6ba5211
           </Text>
            </TouchableOpacity>
            {showStatePicker && (
@@ -251,6 +317,7 @@ const convertToBase64 = async (imageUri) => {
               </Picker>
             </View>
           </Modal>
+<<<<<<< HEAD
            )}
       </>       
     )}
@@ -287,9 +354,41 @@ const convertToBase64 = async (imageUri) => {
              {errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
 
         <TextInput style={styles.input}  placeholder="Confirm Password"  secureTextEntry  value={confirmPassword}  onChangeText={setConfirmPassword}/>
+=======
+        )}
+        <TextInput
+          style={styles.input}
+          placeholder="Email"
+          value={email}
+          onChangeText={setEmail}
+        />
+        {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
+        <TextInput
+          style={styles.input}
+          placeholder="Password"
+          secureTextEntry
+          value={password}
+          onChangeText={setPassword}
+        />
+        {errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
+        <TextInput
+          style={styles.input}
+          placeholder="Confirm Password"
+          secureTextEntry
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+        />
+>>>>>>> db18a6374973321bdfe974b285431097f6ba5211
         {errors.confirmPassword && <Text style={styles.errorText}>{errors.confirmPassword}</Text>}
-
         <TouchableOpacity style={styles.submitButton} onPress={handleButtonSubmit}>
+        <Text style={styles.buttonText}>Submit</Text>
+         </TouchableOpacity>
+
+<<<<<<< HEAD
+        <TouchableOpacity style={styles.submitButton} onPress={handleButtonSubmit}>
+=======
+        <TouchableOpacity style={styles.submitButton} onPress={(handleSubmit) => navigation.navigate('Home')}>
+>>>>>>> db18a6374973321bdfe974b285431097f6ba5211
           <Text style={styles.buttonText}>Submit</Text>
          </TouchableOpacity>
  
@@ -297,7 +396,6 @@ const convertToBase64 = async (imageUri) => {
     </ScrollView>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
@@ -412,7 +510,9 @@ const styles = StyleSheet.create({
     marginLeft: '10%',
   },
 });
-
 export default RegisterScreen;
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> db18a6374973321bdfe974b285431097f6ba5211

@@ -1,4 +1,5 @@
 
+
 import { ScrollView, StyleSheet, Text, TextInput, View,Modal, KeyboardAvoidingView } from "react-native";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useEffect, useState } from "react";
@@ -347,3 +348,5 @@ errorText: {
 });
 
 export default UserScreen;
+
+
