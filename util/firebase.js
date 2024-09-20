@@ -28,7 +28,7 @@ export async function registerUser(email, password, name, lastName, birthday, co
             Country: country,
             State: state,
             Image: base64Image,
-            Role: role
+            Role: role,
         });
 
         console.log("User data saved in Realtime Database.");
@@ -44,6 +44,23 @@ export async function registerUser(email, password, name, lastName, birthday, co
             Alert.alert('Registration failed', 'An unexpected error occurred. Please try again.');
         }
         return null;
+    }
+}
+
+export async function changeImagefunction(base64Image){
+    const url = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${API_KEY}`;
+        try {
+            const response = await axios.post(url, {
+                email: email,
+                password: password,
+                returnSecureToken: true,
+            });
+        const userId = response.data.localId;
+        await axios.put(`https://task-menagement-64e90-default-rtdb.firebaseio.com/User/${userId}.json`, {
+            changeImage:base64Image
+        });
+    }catch(error){
+        console.log('image didnt convert to base64')
     }
 }
 
@@ -66,24 +83,22 @@ export async function loginUser(email, password) {
         // Fetch user data from Firebase Realtime Database
         const userResponse = await axios.get(`https://task-menagement-64e90-default-rtdb.firebaseio.com/User/${userId}.json`);
 
-        const userData = userResponse.data;
 
-        // Add null checks
-        if (!userData) {
-            Alert.alert('Data Error', 'User data is missing or incomplete.');
-            return null;
-        }
+        const userData = userResponse.data;
 
         const role = userData.Role || 'user';
         const name = userData.Name || 'Unknown';
         const lastName = userData.LastName || 'Unknown';
-
+        const birthdate = userData.Birthday || '';
 
         return {
             token,
             userData: {
                 ...userData,
                 role,
+                Name:name,
+                LastName: lastName,
+                birthdate,
             },
         };
     } catch (error) {
@@ -251,3 +266,4 @@ export const fetchTasksWithUserDetails = async () => {
         throw error;
     }
 };
+

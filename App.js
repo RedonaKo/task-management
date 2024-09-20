@@ -9,6 +9,8 @@ import AdminTabs from './components/AdminTabs';
 import UserTabs from './components/UserTabs';
 import AddTask from './screens/AddTask';
 import TaskDetails from './screens/TaskDetails';
+import ProfileScreen from './screens/ProfileScreen';
+
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -35,6 +37,7 @@ export default function App() {
                 <Stack.Screen name="Reset" component={ResetPw}/>
                 <Stack.Screen name="AddTask" component={AddTask}/>
                 <Stack.Screen name='TaskDetails' component={TaskDetails}/>
+                <Stack.Screen name='Profile' component={ProfileScreen}/>
             </Stack.Navigator>
         </NavigationContainer>
     </AuthProvider>

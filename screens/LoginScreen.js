@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet, ScrollView,
 import { AuthContext } from '../context/authContext';
 import { loginUser, getUserData } from '../util/firebase';
 import { useNavigation } from '@react-navigation/native';
+import { StatusBar } from 'expo-status-bar';
 
 export default function LoginScreen() {
     const [email, setEmail] = useState('');
@@ -44,17 +45,18 @@ export default function LoginScreen() {
         const result = await loginUser(email, password);
         if (result && result.token) {
             const { userData } = result;
-            const { role, Name, LastName } = userData;
+            const { role, Name, LastName, birthdate } = userData;
 
             // Debugging logs
             console.log('User data fetched:', userData);
             console.log('Role:', role);
             console.log('Name:', Name);
             console.log('LastName:', LastName);
+            console.log('Birthdate:', birthdate);
 
             // Ensure Name and LastName are passed to signIn
-            if (Name && LastName) {
-                await signIn(result.token, role, Name, LastName);
+            if (Name && LastName && birthdate) {
+                await signIn(result.token, role, Name, LastName, birthdate);
                 if (role === 'admin') {
                     navigation.navigate('AdminHome',  { name: Name, lastName: LastName });
                 } else {

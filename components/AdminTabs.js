@@ -5,12 +5,12 @@ import ReportScreen from '../screens/ReportScreen';
 import {createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from '@expo/vector-icons/Ionicons'; 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, Touchable, TouchableOpacity, View } from 'react-native';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
-const AdminHeader = ({name, lastName}) => {
+const AdminHeader = ({name, lastName, navigation}) => {
     const initialName = name ? name[0].toUpperCase() : '';
     const initialLastName = lastName ? lastName[0].toUpperCase() : '';
 
@@ -18,13 +18,16 @@ const AdminHeader = ({name, lastName}) => {
     <View style={styles.headerContainer}>
       <Text style={styles.headerText}>Admin Page</Text>
      <View style={styles.container}>
-        <Text style={styles.text}>{initialName + initialLastName}</Text>
+
+      <TouchableOpacity onPress={() => navigation.navigate('Profile')}>  
+          <Text style={styles.text}>{initialName + initialLastName}</Text>
+      </TouchableOpacity>
       </View>
     </View>
   );
 }
 
-const AdminTabs = ({route}) => {
+const AdminTabs = ({navigation, route}) => {
     const { name, lastName } = route.params; 
     
     return (
@@ -33,7 +36,7 @@ const AdminTabs = ({route}) => {
                 name='Admin Tabs'
                 component={BottomTabs}
                 options={{
-                    header: () => <AdminHeader name={name} lastName={lastName}/>,
+                    header: () => <AdminHeader name={name} lastName={lastName} navigation={navigation}/>,
                     headerStyle:{backgroundColor:'#6AC5C8'}
                 }}
             />

@@ -1,6 +1,6 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet,TouchableOpacity } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Tasks from '../screens/Tasks';
 import ReportScreen from '../screens/ReportScreen';
@@ -11,7 +11,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
-const CustomHeader = ({ name, lastName}) => {
+const CustomHeader = ({ name, lastName, navigation}) => {
     const initialName = name ? name[0].toUpperCase() : '';
     const initialLastName = lastName ? lastName[0].toUpperCase() : '';
 
@@ -19,13 +19,15 @@ const CustomHeader = ({ name, lastName}) => {
     <View style={styles.headerContainer}>
       <Text style={styles.headerText}>User Page</Text>
       <View style={styles.container}>
-        <Text style={styles.text}>{initialName + initialLastName}</Text>
+        <TouchableOpacity onPress={() => navigation.navigate('Profile')}>  
+          <Text style={styles.text}>{initialName + initialLastName}</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
 };
 
-const UserTabs = ({route}) => {
+const UserTabs = ({navigation, route}) => {
   const { name, lastName } = route.params; 
 
   return (
@@ -34,7 +36,7 @@ const UserTabs = ({route}) => {
         name="UserTabs" 
         component={BottomTab} 
         options={{ 
-          header: () => <CustomHeader name={name} lastName={lastName} />,
+          header: () => <CustomHeader name={name} lastName={lastName} navigation={navigation}/>,
           headerStyle: { backgroundColor: '#6AC5C8' },
         }} 
       />
