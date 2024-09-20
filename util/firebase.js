@@ -11,6 +11,7 @@ export async function registerUser(email, password, name, lastName, birthday, co
             email: email,
             password: password,
             returnSecureToken: true,
+           
         });
 
         const userId = response.data.localId;
@@ -19,11 +20,12 @@ export async function registerUser(email, password, name, lastName, birthday, co
             Name: name,
             LastName: lastName,
             Birthday: birthday,
-            City: city,
             Country: country,
             State: state,
+            City: city,
             Image: base64Image,
-            Role: role
+            Role: role,
+            Email: email
         });
 
         console.log("User data saved in Realtime Database.");
@@ -46,9 +48,24 @@ export async function registerUser(email, password, name, lastName, birthday, co
 
 
 // Fetch all users  with role user from Firebase
+const BASE_URL = 'https://task-menagement-64e90-default-rtdb.firebaseio.com/User.json';
+
+const axiosInstance = axios.create({
+    baseURL: BASE_URL,
+    timeout: 10000,
+    headers: { 'Content-Type': 'application/json' },
+});
+
+
+
 export async function fetchUsers(role = "user") {
     try {
-        const response = await axios.get(`https://task-menagement-64e90-default-rtdb.firebaseio.com/User.json`);
+        const url = `?orderBy="Role"&equalTo="${role}"`;
+        console.log('Request URL:', url);
+
+        const response = await axiosInstance.get(url);
+        console.log('Response data:', response.data);
+
         const users = response.data;
 
         if (!users) {
@@ -56,15 +73,12 @@ export async function fetchUsers(role = "user") {
             return [];
         }
 
-     
-        const userList = Object.keys(users)
-            .map((key) => ({ id: key, ...users[key] }))
-            .filter((user) => user.Role === role);
 
-        console.log('Fetched Users:', userList); 
+        const userList = Object.keys(users).map((key) => ({ id: key, ...users[key] }));
+
         return userList;
     } catch (error) {
-        console.error('Error fetching users:', error.message);
+        console.error('Error fetching users:', error.response ? error.response.data : error.message);
         Alert.alert('Error', 'Failed to fetch users. Please try again later.');
         return [];
     }
@@ -106,4 +120,27 @@ export async function loginUser(email, password) {
         }
         return null;
     }
+}
+     // Update an existing user's data 
+    export async function updateUser(userId, updatedUser) {
+      try {
+        await axios.patch(`https://task-menagement-64e90-default-rtdb.firebaseio.com/User/${userId}.json`, updatedUser);
+        console.log(`User with ID ${userId} updated successfully.`);
+        } catch (error) {
+        console.error('Error updating user:', error.response ? error.response.data : error.message);
+        Alert.alert('Error', 'Failed to update user. Please try again later.');
+    }
+}
+
+
+     // Delete a user 
+    export async function deleteUser(userId) {
+       try {
+        await axios.delete(`https://task-menagement-64e90-default-rtdb.firebaseio.com/User/${userId}.json`);
+        console.log(`User with ID ${userId} deleted successfully.`);
+        
+       } catch (error) {
+        console.error('Error deleting user:', error.response ? error.response.data : error.message);
+        Alert.alert('Error', 'Failed to delete user. Please try again later.');
+       }
 }

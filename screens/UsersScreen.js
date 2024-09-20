@@ -3,16 +3,21 @@ import { Ionicons } from '@expo/vector-icons';
 import { useEffect, useState } from "react";
 import { fetchUsers } from "../util/firebase";
 
-const UserCard = ({ name, tasks, done }) => (
-  <View style={styles.card}>
+const UserCard = ({ name,tasks, done, navigation, userData }) => (
+  <TouchableOpacity
+  style={styles.card}
+  onPress={() => navigation.navigate('UserDetails', {user: userData})}
+  >
     <View style={styles.container}>
       <Text style={styles.text}>{name[0].toUpperCase()}</Text>
+      
     </View>
     <View>
       <Text style={styles.textName}>{name}</Text>
       <Text style={styles.textTaskDone}>Tasks: {tasks}        Done: {done}</Text>
     </View>
-  </View>
+
+  </TouchableOpacity>
 );
 
 const UsersScreen = ({ navigation }) => {
@@ -49,7 +54,10 @@ const UsersScreen = ({ navigation }) => {
           <UserCard 
             name={item.Name} 
             tasks={item.tasks}  
-            done={item.done}  
+            done={item.done} 
+            navigation={navigation}
+            userData={item} 
+            
           />
         )}
         keyExtractor={item => item.id.toString()}
@@ -62,7 +70,7 @@ const UsersScreen = ({ navigation }) => {
   );
 }
 
-export default UsersScreen;
+
 
 const styles = StyleSheet.create({
   list: {
@@ -123,3 +131,5 @@ const styles = StyleSheet.create({
     backgroundColor: "white"
   }
 });
+
+export default UsersScreen;

@@ -11,16 +11,25 @@ import Toast from 'react-native-toast-message';
 
 
 const RegisterScreen = ({navigation}) => {
-  const countryData = Country.getAllCountries();
-  const [country, setCountry] = useState(countryData[0].isoCode);
-  const [state, setState] = useState('');
-  const [city, setCity] = useState('');
-  const [states, setStates] = useState([]);
-  const [cities, setCities] = useState([]);
+  
+
   const [birthdate, setBirthdate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
+
   const [showCountryPicker, setShowCountryPicker] = useState(false); 
-  const [showStatePicker, setShowStatePicker] = useState(false); 
+  const [showStatePicker, setShowStatePicker] = useState(false);
+  const [showCityPicker, setShowCityPicker] = useState(false);
+
+
+  const countryData = Country.getAllCountries();
+  const [country, setCountry] = useState(countryData[0].isoCode); 
+  const [state, setState] = useState('');
+  const [city, setCity] = useState('');
+
+  const [states, setStates] = useState([]);
+  const [cities, setCities] = useState([]);
+
+  
 
   const [name, setName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -31,18 +40,7 @@ const RegisterScreen = ({navigation}) => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [base64Image, setBase64Image] = useState(null); 
 
-  useEffect(() => {
-    setStates(State.getStatesOfCountry(country));
-    setState('');
-    setCity('');
-  }, [country]);
-
-  useEffect(() => {
-    if (state) {
-      setCities(City.getCitiesOfState(country, state));
-      setCity('');
-    }
-  }, [state]);
+ 
 
   const onDateChange = (event, selectedDate) => {
     setShowDatePicker(false);
@@ -50,6 +48,25 @@ const RegisterScreen = ({navigation}) => {
       setBirthdate(selectedDate);
     } 
   };
+
+  useEffect(() => {
+    const stateData = State.getStatesOfCountry(country);
+    setStates(stateData);
+    setState('');
+    setCity('');
+    setCities([]); 
+  }, [country]);
+  
+  
+  useEffect(() => {
+    if (state) {
+      const cityList = City.getCitiesOfState(country, state); 
+      setCities(cityList);
+      setCity(''); 
+    }
+  }, [state]);
+  
+  
  // Image Picker Handler
  const handleChoosePhoto = async () => {
   try {
@@ -193,30 +210,18 @@ const convertToBase64 = async (imageUri) => {
           />
         )}
 
-        <TouchableOpacity
-          style={styles.pickerInput}
-          onPress={() => setShowCountryPicker(true)}
-        >
+     <TouchableOpacity style={styles.pickerInput} onPress={() => setShowCountryPicker(true)}>
           <Text style={styles.pickerText}>
-            {Country.getCountryByCode(country).name}
+            {Country.getCountryByCode(country)?.name || 'Select Country'}
           </Text>
         </TouchableOpacity>
         {showCountryPicker && (
-          <Modal
-            transparent={true}
-            animationType="slide"
-            visible={showCountryPicker}
-            onRequestClose={() => setShowCountryPicker(false)}
-          >
+          <Modal transparent={true} animationType="slide" visible={showCountryPicker} onRequestClose={() => setShowCountryPicker(false)}>
             <View style={styles.modalContainer}>
-              <Picker
-                selectedValue={country}
-                style={styles.picker}
-                onValueChange={(itemValue) => {
-                  setCountry(itemValue);
-                  setShowCountryPicker(false);
-                }}
-              >
+              <Picker selectedValue={country} style={styles.picker} onValueChange={(itemValue) => {
+                setCountry(itemValue);
+                setShowCountryPicker(false);
+              }}>
                 {countryData.map((item) => (
                   <Picker.Item key={item.isoCode} label={item.name} value={item.isoCode} />
                 ))}
@@ -225,68 +230,69 @@ const convertToBase64 = async (imageUri) => {
           </Modal>
         )}
 
-        <TouchableOpacity
-          style={styles.pickerInput}
-          onPress={() => setShowStatePicker(true)}
-        >
+ 
+        {states.length > 0 && (
+         <>
+          <TouchableOpacity style={styles.pickerInput} onPress={() => setShowStatePicker(true)}>
           <Text style={styles.pickerText}>
-            {State.getStateByCodeAndCountry(state, country)?.name || 'Select city'}
+            {state ? State.getStateByCodeAndCountry(state, country)?.name : 'Select State'}
           </Text>
-        </TouchableOpacity>
-        {showStatePicker && (
-          <Modal
-            transparent={true}
-            animationType="slide"
-            visible={showStatePicker}
-            onRequestClose={() => setShowStatePicker(false)}
-          >
+           </TouchableOpacity>
+           {showStatePicker && (
+           <Modal transparent={true} animationType="slide" visible={showStatePicker} onRequestClose={() => setShowStatePicker(false)}>
             <View style={styles.modalContainer}>
-              <Picker
-                selectedValue={state}
-                style={styles.picker}
-                onValueChange={(itemValue) => {
-                  setState(itemValue);
-                  setShowStatePicker(false);
-                }}
-              >
+              <Picker selectedValue={state} style={styles.picker} onValueChange={(itemValue) => {
+                setState(itemValue);
+                setShowStatePicker(false);
+              }}>
                 {states.map((item) => (
                   <Picker.Item key={item.isoCode} label={item.name} value={item.isoCode} />
                 ))}
               </Picker>
             </View>
           </Modal>
-        )}
+           )}
+      </>       
+    )}
 
-        <TextInput
-          style={styles.input}
-          placeholder="Email"
-          value={email}
-          onChangeText={setEmail}
-        />
-        {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
+  {cities.length > 0 && (
+     <>
+    <TouchableOpacity style={styles.pickerInput} onPress={() => setShowCityPicker(true)}>
+      <Text style={styles.pickerText}>
+       {city ? city : 'Select City'}
+      </Text>
+    </TouchableOpacity>
+     {showCityPicker && (
+     <Modal  transparent={true}  animationType="slide"  visible={showCityPicker} onRequestClose={() => setShowCityPicker(false)}>
+       <View style={styles.modalContainer}>
+        <Picker selectedValue={city} style={styles.picker} onValueChange={(itemValue) => {
+         setCity(itemValue);
+         setShowCityPicker(false);
+          }}>
+           {cities.map((item) => (
+           <Picker.Item key={`${item.name}-${item.isoCode}`} label={item.name} value={item.name} />
+              ))}
+        </Picker>
+       </View>
+     </Modal>
+     )}
+     </>
+    )}
+       
 
-        <TextInput
-          style={styles.input}
-          placeholder="Password"
-          secureTextEntry
-          value={password}
-          onChangeText={setPassword}
-        />
-        {errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
+        <TextInput style={styles.input}  placeholder="Email"  value={email}  onChangeText={setEmail} />
+             {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
 
-        <TextInput
-          style={styles.input}
-          placeholder="Confirm Password"
-          secureTextEntry
-          value={confirmPassword}
-          onChangeText={setConfirmPassword}
-        />
+        <TextInput  style={styles.input}  placeholder="Password"  secureTextEntry  value={password}  onChangeText={setPassword}/>
+             {errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
+
+        <TextInput style={styles.input}  placeholder="Confirm Password"  secureTextEntry  value={confirmPassword}  onChangeText={setConfirmPassword}/>
         {errors.confirmPassword && <Text style={styles.errorText}>{errors.confirmPassword}</Text>}
 
         <TouchableOpacity style={styles.submitButton} onPress={handleButtonSubmit}>
-        <Text style={styles.buttonText}>Submit</Text>
+          <Text style={styles.buttonText}>Submit</Text>
          </TouchableOpacity>
-
+ 
       </View>
     </ScrollView>
   );
