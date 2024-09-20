@@ -6,10 +6,8 @@ import { format } from "date-fns";
 const API_KEY = 'AIzaSyC-C5bvScl98C_ocnDaEarrDFPpA7aq_uE';
 const FIREBASE_DB_URL = 'https://task-menagement-64e90-default-rtdb.firebaseio.com/Tasks.json';
 
-<<<<<<< HEAD
-=======
+
 // Function to register a user
->>>>>>> db18a6374973321bdfe974b285431097f6ba5211
 export async function registerUser(email, password, name, lastName, birthday, country, state, city, base64Image, role) {
     const url = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${API_KEY}`;
 
@@ -32,12 +30,9 @@ export async function registerUser(email, password, name, lastName, birthday, co
             State: state,
             City: city,
             Image: base64Image,
-<<<<<<< HEAD
             Role: role,
             Email: email
-=======
-            Role: role
->>>>>>> db18a6374973321bdfe974b285431097f6ba5211
+
         });
 
         console.log("User data saved in Realtime Database.");
@@ -55,16 +50,6 @@ export async function registerUser(email, password, name, lastName, birthday, co
         return null;
     }
 }  
-
-
-// Fetch all users  with role user from Firebase
-const BASE_URL = 'https://task-menagement-64e90-default-rtdb.firebaseio.com/User.json';
-
-const axiosInstance = axios.create({
-    baseURL: BASE_URL,
-    timeout: 10000,
-    headers: { 'Content-Type': 'application/json' },
-});
 
 
 
@@ -145,7 +130,7 @@ export async function loginUser(email, password) {
         return null;
     }
 }
-<<<<<<< HEAD
+
      // Update an existing user's data 
     export async function updateUser(userId, updatedUser) {
       try {
@@ -169,7 +154,7 @@ export async function loginUser(email, password) {
         Alert.alert('Error', 'Failed to delete user. Please try again later.');
        }
 }
-=======
+
 
 
 // Function to get JWT payload
@@ -323,4 +308,4 @@ export const fetchTasksWithUserDetails = async () => {
         throw error;
     }
 };
->>>>>>> db18a6374973321bdfe974b285431097f6ba5211
+

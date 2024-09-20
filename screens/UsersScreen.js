@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
     height: 70,
     justifyContent: 'center',
     position: 'absolute',
-    marginTop: 580,
+    marginTop: 500,
     marginLeft: 290
   },
   view: {

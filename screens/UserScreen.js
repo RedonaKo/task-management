@@ -1,6 +1,6 @@
 
 
-import { ScrollView, StyleSheet, Text, TextInput, View,Modal, KeyboardAvoidingView } from "react-native";
+import { ScrollView, StyleSheet, Text, TextInput, View,Modal, FlatList } from "react-native";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useEffect, useState } from "react";
 import { TouchableOpacity } from "react-native";
@@ -97,7 +97,7 @@ const handleSubmitButton = async () => {
          text2: 'User has been registered successfully.'
        });
        console.log('User registered successfully!');
-       navigation.goBack('Users');
+       navigation.navigate('Users');
      }
    } catch (error) {
      console.error('Error during registration:', error.message);
@@ -111,6 +111,7 @@ return(
 
  <ScrollView contentContainerStyle={styles.container} >
      <Text style={styles.text}>Add User</Text>
+     <ScrollView>
      <View style={styles.view}>
          <TextInput placeholder="Name" value={name} onChangeText={setName} style={styles.textInput} />
          {errors.name && <Text style={styles.errorText}>{errors.name}</Text>}
@@ -208,6 +209,7 @@ return(
   <TextInput placeholder="Password" style={styles.textInput} secureTextEntry value={password} onChangeText={setPassword} ></TextInput>
   {errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
      </View>
+     </ScrollView>
      <TouchableOpacity style={styles.submitButton} onPress={handleSubmitButton}>
         <Text style={styles.buttonText}>Add User</Text>
     </TouchableOpacity>
@@ -229,10 +231,11 @@ container: {
 text: {
  width: 130,
  height: 30,
- fontSize: 30,
+ fontSize: 25,
  fontWeight: 'bold',
  marginTop: 50,
- marginBottom: 15
+ marginBottom: 15,
+ textAlign: 'center'
 
 },
 view: {
@@ -252,7 +255,8 @@ textInput: {
  backgroundColor: '#fff',
  marginHorizontal: 17,
  marginTop: 25,
- marginBottom: -5
+ marginBottom: -5,
+ padding: 6
 },
 dateInput: {
  width: '90%',
