@@ -97,7 +97,7 @@ const handleSubmitButton = async () => {
          text2: 'User has been registered successfully.'
        });
        console.log('User registered successfully!');
-       navigation.navigate('Users');
+       navigation.goBack('Users');
      }
    } catch (error) {
      console.error('Error during registration:', error.message);
