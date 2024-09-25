@@ -5,6 +5,7 @@ import TaskItem from './TaskItem';
 import { useState, useEffect } from 'react';
 import { fetchTasks } from '../../util/firebase';
 import { fetchTasksWithUserDetails } from '../../util/firebase';
+import { Ionicons } from '@expo/vector-icons';
 
 
 const tasks = [
@@ -97,7 +98,7 @@ function TaskList() {
                 keyExtractor={item => item.id}
             />
             <TouchableOpacity style={styles.fab} onPress={() => { navigation.navigate('AddTask') }}>
-                <Text style={styles.fabText}>+</Text>
+                <Ionicons name="add" size={35} color="white" />
             </TouchableOpacity>
         </View>
     );
@@ -138,8 +139,6 @@ const styles = StyleSheet.create({
     },
     taskInfo: {
         flex: 1,
-
-
     },
     taskTitle: {
         fontSize: 18,
@@ -147,20 +146,27 @@ const styles = StyleSheet.create({
         marginBottom: 5,
     },
     fab: {
-        position: 'absolute',
-        right: 20,
-        bottom: 20,
-        backgroundColor: '#00ACC1',
-        borderRadius: 30,
-        width: 50,
-        height: 50,
-        justifyContent: 'center',
         alignItems: 'center',
+        borderRadius: 50,
+        backgroundColor: '#0891B2',
+        width: 70,
+        height: 70,
+        justifyContent: 'center',
+        position: 'absolute',
+        marginTop: 500,
+        marginLeft: 290
     },
-    fabText: {
-        fontSize: 30,
-        color: '#fff',
-    },
+    button: {
+        alignItems: 'center',
+        borderRadius: 50,
+        backgroundColor: '#0891B2',
+        width: 70,
+        height: 70,
+        justifyContent: 'center',
+        position: 'absolute',
+        marginTop: 490,
+        marginLeft: 290
+      },
     fontText: {
         fontWeight: 'bold',
         paddingVertical: 3
