@@ -84,6 +84,7 @@ function TaskList() {
                 renderItem={({ item }) => <TouchableOpacity
                     onPress={() => {
                         navigation.navigate('TaskDetails', {
+                            id: item.id,
                             title: item.taskTitle,
                             assignedTo: item.assignedTo,
                             StartDate: item.startDate,
@@ -166,7 +167,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         marginTop: 490,
         marginLeft: 290
-      },
+    },
     fontText: {
         fontWeight: 'bold',
         paddingVertical: 3
