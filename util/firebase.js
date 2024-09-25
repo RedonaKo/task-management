@@ -16,7 +16,7 @@ export async function registerUser(email, password, name, lastName, birthday, co
             email: email,
             password: password,
             returnSecureToken: true,
-           
+
         });
 
         const userId = response.data.localId;
@@ -49,7 +49,7 @@ export async function registerUser(email, password, name, lastName, birthday, co
         }
         return null;
     }
-}  
+}
 
 
 
@@ -131,28 +131,28 @@ export async function loginUser(email, password) {
     }
 }
 
-     // Update an existing user's data 
-    export async function updateUser(userId, updatedUser) {
-      try {
+// Update an existing user's data 
+export async function updateUser(userId, updatedUser) {
+    try {
         await axios.patch(`https://task-menagement-64e90-default-rtdb.firebaseio.com/User/${userId}.json`, updatedUser);
         console.log(`User with ID ${userId} updated successfully.`);
-        } catch (error) {
+    } catch (error) {
         console.error('Error updating user:', error.response ? error.response.data : error.message);
         Alert.alert('Error', 'Failed to update user. Please try again later.');
     }
 }
 
 
-     // Delete a user 
-    export async function deleteUser(userId) {
-       try {
+// Delete a user 
+export async function deleteUser(userId) {
+    try {
         await axios.delete(`https://task-menagement-64e90-default-rtdb.firebaseio.com/User/${userId}.json`);
         console.log(`User with ID ${userId} deleted successfully.`);
-        
-       } catch (error) {
+
+    } catch (error) {
         console.error('Error deleting user:', error.response ? error.response.data : error.message);
         Alert.alert('Error', 'Failed to delete user. Please try again later.');
-       }
+    }
 }
 
 
@@ -308,4 +308,32 @@ export const fetchTasksWithUserDetails = async () => {
         throw error;
     }
 };
+
+export async function deleteTask(taskKey) {
+    try {
+        // Ensure the taskKey is provided
+        if (!taskKey) {
+            throw new Error('Task key is required for deletion');
+        }
+
+        // Construct the URL with the taskKey
+        const url = `https://task-menagement-64e90-default-rtdb.firebaseio.com/Tasks/${taskKey}.json`;
+
+        // Perform the delete request
+        const response = await axios.delete(url);
+
+        // Check if the task was successfully deleted
+        if (response.status === 200) {
+            console.log(`Task with key ${taskKey} deleted successfully.`);
+            return true;
+        } else {
+            throw new Error('Failed to delete task');
+        }
+    } catch (error) {
+        console.error('Error deleting task:', error.message);
+        Alert.alert('Error', 'Failed to delete task. Please try again later.');
+        return false;
+    }
+}
+
 
