@@ -241,7 +241,7 @@ export const fetchTasks = async () => {
             throw new Error('Failed to fetch tasks');
         }
 
-        console.log('Fetched data:', response.data);
+
 
         const tasks = Object.keys(response.data || {}).map(key => {
             const fields = response.data[key].fields;

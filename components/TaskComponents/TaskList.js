@@ -80,6 +80,7 @@ function TaskList() {
     return (
         <View style={styles.container}>
             <FlatList
+                showsVerticalScrollIndicator={false}
                 data={tasks}
                 renderItem={({ item }) => <TouchableOpacity
                     onPress={() => {
@@ -154,8 +155,8 @@ const styles = StyleSheet.create({
         height: 70,
         justifyContent: 'center',
         position: 'absolute',
-        marginTop: 500,
-        marginLeft: 290
+        bottom: 20,
+        right: 15
     },
     button: {
         alignItems: 'center',
