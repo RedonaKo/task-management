@@ -2,6 +2,7 @@ import axios from "axios";
 import { Alert } from "react-native";
 import jwtDecode from "jwt-decode";
 import { format } from "date-fns";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const API_KEY = 'AIzaSyC-C5bvScl98C_ocnDaEarrDFPpA7aq_uE';
 const FIREBASE_DB_URL = 'https://task-menagement-64e90-default-rtdb.firebaseio.com/Tasks.json';
@@ -94,6 +95,8 @@ export async function loginUser(email, password) {
         const userId = response.data.localId;
 
         console.log("Login Successful. Token:", token);
+        await AsyncStorage.setItem('userId', userId);
+        console.log('User ID stored:', userId);
 
         // Fetch user data from Firebase Realtime Database
         const userResponse = await axios.get(`https://task-menagement-64e90-default-rtdb.firebaseio.com/User/${userId}.json`);
@@ -335,5 +338,42 @@ export async function deleteTask(taskKey) {
         return false;
     }
 }
+
+export const fetchTasksWithUserDetails2 = async () => {
+    try {
+        const tasks = await fetchTasks();
+
+        const tasksWithUserDetails = await Promise.all(tasks.map(async (task) => {
+            try {
+                const userDetails = await fetchUserDetails(task.assignedTo);
+
+                if (!userDetails || !userDetails.Name || !userDetails.LastName) {
+                    return {
+                        ...task,
+                        assignedTo: 'Unknown User',
+                    };
+                }
+
+                return {
+                    ...task,
+                    assignedTo: `${userDetails.Name} ${userDetails.LastName}`,
+                };
+            } catch (userError) {
+                console.error(`Error fetching details for user ID ${task.assignedTo}:`, userError.message);
+                return {
+                    ...task,
+                    assignedTo: 'Error Fetching User',
+                };
+            }
+        }));
+
+        return tasksWithUserDetails;
+    } catch (error) {
+        console.error('Error fetching tasks with user details:', error.message);
+        throw error;
+    }
+};
+
+
 
 

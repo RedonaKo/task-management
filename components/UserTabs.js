@@ -7,13 +7,14 @@ import ReportScreen from '../screens/ReportScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import DoneTaskScreen from '../screens/DoneTasksScreen';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import ReportUserScreen from '../screens/ReportUserScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
-const CustomHeader = ({ name, lastName}) => {
-    const initialName = name ? name[0].toUpperCase() : '';
-    const initialLastName = lastName ? lastName[0].toUpperCase() : '';
+const CustomHeader = ({ name, lastName }) => {
+  const initialName = name ? name[0].toUpperCase() : '';
+  const initialLastName = lastName ? lastName[0].toUpperCase() : '';
 
   return (
     <View style={styles.headerContainer}>
@@ -25,18 +26,18 @@ const CustomHeader = ({ name, lastName}) => {
   );
 };
 
-const UserTabs = ({route}) => {
-  const { name, lastName } = route.params; 
+const UserTabs = ({ route }) => {
+  const { name, lastName } = route.params;
 
   return (
     <Stack.Navigator>
-      <Stack.Screen 
-        name="UserTabs" 
-        component={BottomTab} 
-        options={{ 
+      <Stack.Screen
+        name="UserTabs"
+        component={BottomTab}
+        options={{
           header: () => <CustomHeader name={name} lastName={lastName} />,
           headerStyle: { backgroundColor: '#6AC5C8' },
-        }} 
+        }}
       />
     </Stack.Navigator>
   );
@@ -69,7 +70,7 @@ const BottomTab = () => (
     <Tab.Screen name="Tasks" component={Tasks} />
     <Tab.Screen name="Done Task" component={DoneTaskScreen} />
     <Tab.Screen name="Profile" component={ProfileScreen} />
-    <Tab.Screen name="Report" component={ReportScreen} />
+    <Tab.Screen name="Report" component={ReportUserScreen} />
   </Tab.Navigator>
 );
 
