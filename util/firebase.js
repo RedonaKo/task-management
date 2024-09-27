@@ -2,6 +2,7 @@ import axios from "axios";
 import { Alert } from "react-native";
 import jwtDecode from "jwt-decode";
 import { format } from "date-fns";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const API_KEY = 'AIzaSyC-C5bvScl98C_ocnDaEarrDFPpA7aq_uE';
 const FIREBASE_DB_URL = 'https://task-menagement-64e90-default-rtdb.firebaseio.com/Tasks.json';
@@ -16,7 +17,7 @@ export async function registerUser(email, password, name, lastName, birthday, co
             email: email,
             password: password,
             returnSecureToken: true,
-           
+
         });
 
         const userId = response.data.localId;
@@ -48,7 +49,7 @@ export async function registerUser(email, password, name, lastName, birthday, co
         }
         return null;
     }
-}  
+}
 
 
 
@@ -108,6 +109,8 @@ export async function loginUser(email, password) {
         const userId = response.data.localId;
 
         console.log("Login Successful. Token:", token);
+        await AsyncStorage.setItem('userId', userId);
+        console.log('User ID stored:', userId);
 
         // Fetch user data from Firebase Realtime Database
         const userResponse = await axios.get(`https://task-menagement-64e90-default-rtdb.firebaseio.com/User/${userId}.json`);
@@ -143,28 +146,28 @@ export async function loginUser(email, password) {
     }
 }
 
-     // Update an existing user's data 
-    export async function updateUser(userId, updatedUser) {
-      try {
+// Update an existing user's data 
+export async function updateUser(userId, updatedUser) {
+    try {
         await axios.patch(`https://task-menagement-64e90-default-rtdb.firebaseio.com/User/${userId}.json`, updatedUser);
         console.log(`User with ID ${userId} updated successfully.`);
-        } catch (error) {
+    } catch (error) {
         console.error('Error updating user:', error.response ? error.response.data : error.message);
         Alert.alert('Error', 'Failed to update user. Please try again later.');
     }
 }
 
 
-     // Delete a user 
-    export async function deleteUser(userId) {
-       try {
+// Delete a user 
+export async function deleteUser(userId) {
+    try {
         await axios.delete(`https://task-menagement-64e90-default-rtdb.firebaseio.com/User/${userId}.json`);
         console.log(`User with ID ${userId} deleted successfully.`);
-        
-       } catch (error) {
+
+    } catch (error) {
         console.error('Error deleting user:', error.response ? error.response.data : error.message);
         Alert.alert('Error', 'Failed to delete user. Please try again later.');
-       }
+    }
 }
 
 
@@ -253,7 +256,7 @@ export const fetchTasks = async () => {
             throw new Error('Failed to fetch tasks');
         }
 
-        console.log('Fetched data:', response.data);
+
 
         const tasks = Object.keys(response.data || {}).map(key => {
             const fields = response.data[key].fields;
@@ -320,4 +323,69 @@ export const fetchTasksWithUserDetails = async () => {
         throw error;
     }
 };
+
+export async function deleteTask(taskKey) {
+    try {
+        // Ensure the taskKey is provided
+        if (!taskKey) {
+            throw new Error('Task key is required for deletion');
+        }
+
+        // Construct the URL with the taskKey
+        const url = `https://task-menagement-64e90-default-rtdb.firebaseio.com/Tasks/${taskKey}.json`;
+
+        // Perform the delete request
+        const response = await axios.delete(url);
+
+        // Check if the task was successfully deleted
+        if (response.status === 200) {
+            console.log(`Task with key ${taskKey} deleted successfully.`);
+            return true;
+        } else {
+            throw new Error('Failed to delete task');
+        }
+    } catch (error) {
+        console.error('Error deleting task:', error.message);
+        Alert.alert('Error', 'Failed to delete task. Please try again later.');
+        return false;
+    }
+}
+
+export const fetchTasksWithUserDetails2 = async () => {
+    try {
+        const tasks = await fetchTasks();
+
+        const tasksWithUserDetails = await Promise.all(tasks.map(async (task) => {
+            try {
+                const userDetails = await fetchUserDetails(task.assignedTo);
+
+                if (!userDetails || !userDetails.Name || !userDetails.LastName) {
+                    return {
+                        ...task,
+                        assignedTo: 'Unknown User',
+                    };
+                }
+
+                return {
+                    ...task,
+                    assignedTo: `${userDetails.Name} ${userDetails.LastName}`,
+                };
+            } catch (userError) {
+                console.error(`Error fetching details for user ID ${task.assignedTo}:`, userError.message);
+                return {
+                    ...task,
+                    assignedTo: 'Error Fetching User',
+                };
+            }
+        }));
+
+        return tasksWithUserDetails;
+    } catch (error) {
+        console.error('Error fetching tasks with user details:', error.message);
+        throw error;
+    }
+};
+
+
+
 

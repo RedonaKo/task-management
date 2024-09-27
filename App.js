@@ -19,45 +19,47 @@ const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
-    <AuthProvider>     
-        <NavigationContainer>
-            <Stack.Navigator initialRouteName="Login">
-                <Stack.Screen name="Login" component={LoginScreen} />
-                <Stack.Screen name="Register" component={RegisterScreen} />
-                <Stack.Screen 
-                    name="Users Page" 
-                    component={UserTabs} 
-                    options={{ 
-                        headerShown: false 
-                    }} 
-                />
-                <Stack.Screen 
-                  name="AdminHome" 
-                  component={AdminTabs} 
-                  options={{
-                    headerShown: false
-                  }}
-                />
-                <Stack.Screen name="Reset" component={ResetPw}/>
-                <Stack.Screen name="AddTask" component={AddTask}/>
-                <Stack.Screen name='TaskDetails' component={TaskDetails}/>
+    <AuthProvider>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="Login">
+          <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="Register" component={RegisterScreen} />
+          <Stack.Screen
+            name="Users Page"
+            component={UserTabs}
+            options={{
+              headerShown: false
+            }}
+          />
+          <Stack.Screen
+            name="AdminHome"
+            component={AdminTabs}
+            options={{
+              headerShown: false
+            }}
+          />
+          <Stack.Screen name="Reset" component={ResetPw} />
+          <Stack.Screen name="AddTask" component={AddTask} />
+          <Stack.Screen name='TaskDetails' component={TaskDetails} options={{
+            headerShown: false,
+          }} />
 
-                <Stack.Screen name='Users' component={UsersScreen}
-                 options={{
-                  headerShown: false
-                }}/>
-                <Stack.Screen name='User' component={UserScreen}
-                 options={{
-                  headerShown: false
-                }}/>
-                <Stack.Screen name='UserDetails' component={UserDetailsScreen}
-                 options={{
-                  headerShown: false
-                }}/>
-                <Stack.Screen name='EditUser' component={EditUserScreen}/>
-                <Stack.Screen name='Profile' component={ProfileScreen}/>
-            </Stack.Navigator>
-        </NavigationContainer>
+          <Stack.Screen name='Users' component={UsersScreen}
+            options={{
+              headerShown: false
+            }} />
+          <Stack.Screen name='User' component={UserScreen}
+            options={{
+              headerShown: false
+            }} />
+          <Stack.Screen name='UserDetails' component={UserDetailsScreen}
+            options={{
+              headerShown: false
+            }} />
+          <Stack.Screen name='EditUser' component={EditUserScreen} />
+          <Stack.Screen name='Profile' component={ProfileScreen}/>
+        </Stack.Navigator>
+      </NavigationContainer>
     </AuthProvider>
 
   );

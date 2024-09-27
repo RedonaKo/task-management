@@ -19,13 +19,14 @@ export const AuthProvider = ({ children }) => {
                 const lastName = await AsyncStorage.getItem('userLastName') || '';
                 const birthdate = await AsyncStorage.getItem('userBirthdate') || '';    
 
+
                 if (token) setUserToken(token);
                 if (role) setUserRole(role);
                 setUserName(name);
                 setUserLastName(lastName);
                 setUserBirthdate(birthdate);
             } catch (error) {
-                console.error('Failed to load user data:', error); 
+                console.error('Failed to load user data:', error);
             }
         };
 
