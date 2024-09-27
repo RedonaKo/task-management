@@ -17,12 +17,13 @@ export const AuthProvider = ({ children }) => {
                 const name = await AsyncStorage.getItem('userName') || '';
                 const lastName = await AsyncStorage.getItem('userLastName') || '';
 
+
                 if (token) setUserToken(token);
                 if (role) setUserRole(role);
                 setUserName(name);
                 setUserLastName(lastName);
             } catch (error) {
-                console.error('Failed to load user data:', error); 
+                console.error('Failed to load user data:', error);
             }
         };
 
