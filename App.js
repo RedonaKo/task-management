@@ -9,12 +9,19 @@ import AdminTabs from './components/AdminTabs';
 import UserTabs from './components/UserTabs';
 import AddTask from './screens/AddTask';
 import TaskDetails from './screens/TaskDetails';
-
+import UserDetailsScreen from './screens/UserDetailsScreen';
+import UserScreen from './screens/UserScreen';
+import EditUserScreen from './components/EditUserScreen';
+import UsersScreen from './screens/UsersScreen';
+import UserTasksScreen from './screens/UserTasksScreen';
+import TaskUserDetails from './screens/TaskUserDetails';
+import TestedTasksScreen from './screens/TestedTasksScreen';
 const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
     <AuthProvider>     
+   
         <NavigationContainer>
             <Stack.Navigator initialRouteName="Login">
                 <Stack.Screen name="Login" component={LoginScreen} />
@@ -36,6 +43,35 @@ export default function App() {
                 <Stack.Screen name="Reset" component={ResetPw}/>
                 <Stack.Screen name="AddTask" component={AddTask}/>
                 <Stack.Screen name='TaskDetails' component={TaskDetails}/>
+
+                <Stack.Screen name='Users' component={UsersScreen}
+                 options={{
+                  headerShown: false
+                }}/>
+                <Stack.Screen name='User' component={UserScreen}
+                 options={{
+                  headerShown: false
+                }}/>
+                <Stack.Screen name='UserDetails' component={UserDetailsScreen}
+                 options={{
+                  headerShown: false
+                }}/>
+                <Stack.Screen name='EditUser' component={EditUserScreen}/>
+                <Stack.Screen name='UserTasks' component={UserTasksScreen}
+                  options={{
+                    headerShown: false
+                  }}/>
+                  <Stack.Screen name='TaskUserDetails' component={TaskUserDetails}
+                   options={{
+                    headerShown: false
+                  }}/>
+                  
+                   <Stack.Screen name='TestedTasks' component={TestedTasksScreen}/>
+
+                   
+                
+            
+
             </Stack.Navigator>
         </NavigationContainer>
     </AuthProvider>

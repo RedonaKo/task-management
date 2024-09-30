@@ -2,14 +2,14 @@ import axios from "axios";
 import { Alert } from "react-native";
 import jwtDecode from "jwt-decode";
 import { format } from "date-fns";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const API_KEY = 'AIzaSyC-C5bvScl98C_ocnDaEarrDFPpA7aq_uE';
 const FIREBASE_DB_URL = 'https://task-menagement-64e90-default-rtdb.firebaseio.com/Tasks.json';
 
-<<<<<<< HEAD
-=======
+
 // Function to register a user
->>>>>>> db18a6374973321bdfe974b285431097f6ba5211
+
 export async function registerUser(email, password, name, lastName, birthday, country, state, city, base64Image, role) {
     const url = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${API_KEY}`;
 
@@ -32,12 +32,11 @@ export async function registerUser(email, password, name, lastName, birthday, co
             State: state,
             City: city,
             Image: base64Image,
-<<<<<<< HEAD
             Role: role,
             Email: email
-=======
-            Role: role
->>>>>>> db18a6374973321bdfe974b285431097f6ba5211
+
+       
+
         });
 
         console.log("User data saved in Realtime Database.");
@@ -110,6 +109,9 @@ export async function loginUser(email, password) {
 
         console.log("Login Successful. Token:", token);
 
+        // Save userId to AsyncStorage
+        await AsyncStorage.setItem('userId', userId);
+
         // Fetch user data from Firebase Realtime Database
         const userResponse = await axios.get(`https://task-menagement-64e90-default-rtdb.firebaseio.com/User/${userId}.json`);
 
@@ -124,6 +126,8 @@ export async function loginUser(email, password) {
         const role = userData.Role || 'user';
         const name = userData.Name || 'Unknown';
         const lastName = userData.LastName || 'Unknown';
+
+        
 
 
         return {
@@ -145,7 +149,7 @@ export async function loginUser(email, password) {
         return null;
     }
 }
-<<<<<<< HEAD
+
      // Update an existing user's data 
     export async function updateUser(userId, updatedUser) {
       try {
@@ -169,7 +173,7 @@ export async function loginUser(email, password) {
         Alert.alert('Error', 'Failed to delete user. Please try again later.');
        }
 }
-=======
+
 
 
 // Function to get JWT payload
@@ -183,13 +187,6 @@ export const getJwtPayload = (token) => {
     }
 };
 
-const BASE_URL = 'https://task-menagement-64e90-default-rtdb.firebaseio.com/User.json';
-
-const axiosInstance = axios.create({
-    baseURL: BASE_URL,
-    timeout: 10000,
-    headers: { 'Content-Type': 'application/json' },
-});
 
 export async function fetchUsersInput(role = "user") {
     try {
@@ -248,6 +245,10 @@ export const submitTask = async (taskData) => {
     }
 };
 
+
+
+
+
 export const fetchTasks = async () => {
     try {
         const response = await axios.get(`https://task-menagement-64e90-default-rtdb.firebaseio.com/Tasks.json`);
@@ -293,6 +294,8 @@ export const fetchTasksWithUserDetails = async () => {
     try {
         const tasks = await fetchTasks();
 
+     
+
         const tasksWithUserDetails = await Promise.all(tasks.map(async (task) => {
             try {
                 const userDetails = await fetchUserDetails(task.assignedTo);
@@ -301,18 +304,21 @@ export const fetchTasksWithUserDetails = async () => {
                     return {
                         ...task,
                         assignedTo: 'Unknown User',
+                        assignedToUserId: task.assignedTo, //  userId for filtering
                     };
                 }
 
                 return {
                     ...task,
                     assignedTo: `${userDetails.Name} ${userDetails.LastName}`,
+                    assignedToUserId: task.assignedTo, 
                 };
             } catch (userError) {
                 console.error(`Error fetching details for user ID ${task.assignedTo}:`, userError.message);
                 return {
                     ...task,
                     assignedTo: 'Error Fetching User',
+                    assignedToUserId: task.assignedTo,
                 };
             }
         }));
@@ -323,4 +329,47 @@ export const fetchTasksWithUserDetails = async () => {
         throw error;
     }
 };
->>>>>>> db18a6374973321bdfe974b285431097f6ba5211
+
+
+// Save the tested task to Firebase
+export async function saveTestedTask(task) {
+    try {
+        // Update the task status to 'Tested'
+        const updatedTask = { ...task, status: 'Tested' };
+
+        // Update the task in Tasks
+        await axios.patch(`https://task-menagement-64e90-default-rtdb.firebaseio.com/Tasks/${task.id}.json`, updatedTask);
+
+        console.log('Task updated to tested status:', updatedTask);
+        return true;  
+    } catch (error) {
+        console.error('Error updating task status:', error.message);
+        throw error;
+    }
+}
+
+// Fetch tasks that are tested from Firebase
+export async function fetchTestedTasks() {
+    try {
+        const response = await axios.get(`https://task-menagement-64e90-default-rtdb.firebaseio.com/Tasks.json`);
+
+        if (response.status !== 200) {
+            throw new Error('Failed to fetch tasks');
+        }
+
+        const tasks = Object.keys(response.data || {}).map(key => {
+            return {
+                id: key,
+                ...response.data[key],
+            };
+        });
+
+        // Filter tasks with status 'Tested'
+        const testedTasks = tasks.filter(task => task.status === 'Tested');
+
+        return testedTasks;
+    } catch (error) {
+        console.error('Error fetching tested tasks:', error.message);
+        throw error;
+    }
+}

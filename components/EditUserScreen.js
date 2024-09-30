@@ -41,10 +41,13 @@ const EditUserScreen = ({ route, navigation }) => {
         try {
             await updateUser(user.id, editableUser);
             Alert.alert("User updated successfully!");
-            navigation.navigate("Users", { user: editableUser });
         } catch (error) {
             console.error('Failed to update user: ', error);
             Alert.alert("Error", "Failed to update user. Please try again.");
+        } finally {
+           navigation.goBack("Users", { user: editableUser });
+           
+
         }
     };
 

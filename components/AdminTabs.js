@@ -1,11 +1,11 @@
 import React from 'react';
 import Tasks from '../screens/Tasks';
-import UserScreen from '../screens/UserScreen';
 import ReportScreen from '../screens/ReportScreen';
 import {createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from '@expo/vector-icons/Ionicons'; 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StyleSheet, Text, View } from 'react-native';
+import UsersScreen from '../screens/UsersScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -63,7 +63,7 @@ const BottomTabs = () => (
         })}
     >
         <Tab.Screen name="Tasks" component={Tasks} />
-        <Tab.Screen name="Users" component={UserScreen} />
+        <Tab.Screen name="Users" component={UsersScreen} />
         <Tab.Screen name="Reports" component={ReportScreen} />
     </Tab.Navigator>
 );
