@@ -1,5 +1,3 @@
-   
-
 
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, Image, TextInput, ScrollView, StyleSheet, Modal, Alert } from 'react-native';
@@ -162,7 +160,7 @@ const convertToBase64 = async (imageUri) => {
             text2: 'User has been registered successfully.'
           });
           console.log('User registered successfully!');
-          navigation.navigate('Home');
+          navigation.navigate('Login');
         }
       } catch (error) {
         console.error('Error during registration:', error.message);

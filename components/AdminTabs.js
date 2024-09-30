@@ -1,6 +1,5 @@
 import React from 'react';
 import Tasks from '../screens/Tasks';
-import UserScreen from '../screens/UserScreen';
 import ReportScreen from '../screens/ReportScreen';
 import {createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from '@expo/vector-icons/Ionicons'; 

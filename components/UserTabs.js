@@ -2,11 +2,12 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Tasks from '../screens/Tasks';
 import ReportScreen from '../screens/ReportScreen';
-import ProfileScreen from '../screens/ProfileScreen';
 import DoneTaskScreen from '../screens/DoneTasksScreen';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import UserTasksScreen from '../screens/UserTasksScreen';
+import TestedTasksScreen from '../screens/TestedTasksScreen';
+import TaskUserDetails from '../screens/TaskUserDetails';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -14,6 +15,7 @@ const Stack = createNativeStackNavigator();
 const CustomHeader = ({ name, lastName}) => {
     const initialName = name ? name[0].toUpperCase() : '';
     const initialLastName = lastName ? lastName[0].toUpperCase() : '';
+
 
   return (
     <View style={styles.headerContainer}>
@@ -50,11 +52,11 @@ const BottomTab = () => (
       tabBarIcon: ({ color, size }) => {
         let iconName;
 
-        if (route.name === 'Tasks') {
+        if (route.name === 'UserTasks') {
           iconName = 'code-slash-outline';
         } else if (route.name === 'Done Task') {
           iconName = 'checkmark-done-outline';
-        } else if (route.name === 'Profile') {
+        } else if (route.name === 'TestedTasks') {
           iconName = 'person-outline';
         } else if (route.name === 'Report') {
           iconName = 'bar-chart-outline';
@@ -66,9 +68,9 @@ const BottomTab = () => (
       tabBarInactiveTintColor: 'black',
     })}
   >
-    <Tab.Screen name="Tasks" component={Tasks} />
+    <Tab.Screen name="UserTasks" component={UserTasksScreen} />
     <Tab.Screen name="Done Task" component={DoneTaskScreen} />
-    <Tab.Screen name="Profile" component={ProfileScreen} />
+    <Tab.Screen name="TestedTasks" component={TestedTasksScreen} />
     <Tab.Screen name="Report" component={ReportScreen} />
   </Tab.Navigator>
 );

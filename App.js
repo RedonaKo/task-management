@@ -14,11 +14,17 @@ import UserScreen from './screens/UserScreen';
 import EditUserScreen from './components/EditUserScreen';
 import UsersScreen from './screens/UsersScreen';
 
+
+import UserTasksScreen from './screens/UserTasksScreen';
+import TaskUserDetails from './screens/TaskUserDetails';
+import TestedTasksScreen from './screens/TestedTasksScreen';
+
 const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
     <AuthProvider>     
+   
         <NavigationContainer>
             <Stack.Navigator initialRouteName="Login">
                 <Stack.Screen name="Login" component={LoginScreen} />
@@ -53,8 +59,22 @@ export default function App() {
                  options={{
                   headerShown: false
                 }}/>
-                <Stack.Screen name='EditUser' component={EditUserScreen}/>
-             
+      <Stack.Screen name='UserTasks' component={UserTasksScreen}
+                  options={{
+                    headerShown: false
+                  }}/>
+                  <Stack.Screen name='TaskUserDetails' component={TaskUserDetails}
+                   options={{
+                    headerShown: false
+                  }}/>
+                  
+                   <Stack.Screen name='TestedTasks' component={TestedTasksScreen}/>
+
+                   
+                
+            
+
+
             </Stack.Navigator>
         </NavigationContainer>
     </AuthProvider>

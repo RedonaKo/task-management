@@ -8,10 +8,11 @@ import { Country, State, City } from "country-state-city";
 import { Picker } from '@react-native-picker/picker';
 import { registerUser } from "../util/firebase";
 import Toast from 'react-native-toast-message'; 
+import { useNavigation } from '@react-navigation/native';
 
 
 
-const  UserScreen = ({navigation}) => {
+const  UserScreen = ({}) => {
 
 const [birthdate, setBirthdate] = useState(new Date());
 const [showDatePicker, setShowDatePicker] = useState(false);
@@ -34,6 +35,9 @@ const [lastName, setLastName] = useState('');
 const [email, setEmail] = useState('');
 const [password, setPassword] = useState('');
 const [errors, setErrors] = useState({});
+
+const navigation = useNavigation();
+
 
 const onDateChange = (event, selectedDate) => {
  setShowDatePicker(false);
@@ -97,10 +101,13 @@ const handleSubmitButton = async () => {
          text2: 'User has been registered successfully.'
        });
        console.log('User registered successfully!');
-       navigation.goBack('Users');
+  
      }
    } catch (error) {
      console.error('Error during registration:', error.message);
+   }
+   finally {
+    navigation.goBack('Users');
    }
  }
 };
