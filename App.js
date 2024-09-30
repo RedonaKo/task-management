@@ -13,6 +13,7 @@ import UserDetailsScreen from './screens/UserDetailsScreen';
 import UserScreen from './screens/UserScreen';
 import EditUserScreen from './components/EditUserScreen';
 import UsersScreen from './screens/UsersScreen';
+import ProfileScreen from './screens/ProfileScreen';
 
 
 import UserTasksScreen from './screens/UserTasksScreen';
@@ -23,7 +24,8 @@ const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
-    <AuthProvider>     
+
+    <AuthProvider>  
    
         <NavigationContainer>
             <Stack.Navigator initialRouteName="Login">
@@ -69,6 +71,7 @@ export default function App() {
                   }}/>
                   
                    <Stack.Screen name='TestedTasks' component={TestedTasksScreen}/>
+                   <Stack.Screen name='Profile' component={ProfileScreen}/>
 
                    
                 
@@ -77,7 +80,10 @@ export default function App() {
 
             </Stack.Navigator>
         </NavigationContainer>
-    </AuthProvider>
+
+        </AuthProvider>  
+
+ 
 
   );
 }

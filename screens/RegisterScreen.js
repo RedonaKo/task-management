@@ -278,8 +278,6 @@ const convertToBase64 = async (imageUri) => {
      )}
      </>
     )}
-       
-
         <TextInput style={styles.input}  placeholder="Email"  value={email}  onChangeText={setEmail} />
              {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
 
@@ -414,5 +412,3 @@ const styles = StyleSheet.create({
 });
 
 export default RegisterScreen;
-
-

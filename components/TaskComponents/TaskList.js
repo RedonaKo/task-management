@@ -80,10 +80,12 @@ function TaskList() {
     return (
         <View style={styles.container}>
             <FlatList
+                showsVerticalScrollIndicator={false}
                 data={tasks}
                 renderItem={({ item }) => <TouchableOpacity
                     onPress={() => {
                         navigation.navigate('TaskDetails', {
+                            id: item.id,
                             title: item.taskTitle,
                             assignedTo: item.assignedTo,
                             StartDate: item.startDate,
@@ -100,7 +102,7 @@ function TaskList() {
             <TouchableOpacity style={styles.fab} onPress={() => { navigation.navigate('AddTask') }}>
                 <Ionicons name="add" size={35} color="white" />
             </TouchableOpacity>
-        </View >
+        </View>
     );
 };
 
@@ -153,8 +155,8 @@ const styles = StyleSheet.create({
         height: 70,
         justifyContent: 'center',
         position: 'absolute',
-        marginTop: 500,
-        marginLeft: 290
+        bottom: 20,
+        right: 15
     },
     button: {
         alignItems: 'center',
@@ -166,7 +168,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         marginTop: 490,
         marginLeft: 290
-      },
+    },
     fontText: {
         fontWeight: 'bold',
         paddingVertical: 3

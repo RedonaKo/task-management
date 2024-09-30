@@ -1,18 +1,22 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet,TouchableOpacity } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import ReportScreen from '../screens/ReportScreen';
 import DoneTaskScreen from '../screens/DoneTasksScreen';
 import Ionicons from '@expo/vector-icons/Ionicons';
+<<<<<<< HEAD
 import UserTasksScreen from '../screens/UserTasksScreen';
 import TestedTasksScreen from '../screens/TestedTasksScreen';
 import TaskUserDetails from '../screens/TaskUserDetails';
+=======
+import ReportUserScreen from '../screens/ReportUserScreen';
+>>>>>>> 0415f1e32d8bb0a0899f7f0cca3f9157afe74c06
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
-const CustomHeader = ({ name, lastName}) => {
+const CustomHeader = ({ name, lastName, navigation}) => {
     const initialName = name ? name[0].toUpperCase() : '';
     const initialLastName = lastName ? lastName[0].toUpperCase() : '';
 
@@ -21,13 +25,15 @@ const CustomHeader = ({ name, lastName}) => {
     <View style={styles.headerContainer}>
       <Text style={styles.headerText}>User Page</Text>
       <View style={styles.container}>
-        <Text style={styles.text}>{initialName + initialLastName}</Text>
+        <TouchableOpacity onPress={() => navigation.navigate('Profile')}>  
+          <Text style={styles.text}>{initialName + initialLastName}</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
 };
 
-const UserTabs = ({route}) => {
+const UserTabs = ({navigation, route}) => {
   const { name, lastName } = route.params; 
 
   return (
@@ -36,9 +42,10 @@ const UserTabs = ({route}) => {
         name="UserTabs" 
         component={BottomTab} 
         options={{ 
-          header: () => <CustomHeader name={name} lastName={lastName} />,
+          header: () => <CustomHeader name={name} lastName={lastName} navigation={navigation}/>,
+
           headerStyle: { backgroundColor: '#6AC5C8' },
-        }} 
+        }}
       />
     </Stack.Navigator>
   );
@@ -70,8 +77,13 @@ const BottomTab = () => (
   >
     <Tab.Screen name="UserTasks" component={UserTasksScreen} />
     <Tab.Screen name="Done Task" component={DoneTaskScreen} />
+<<<<<<< HEAD
     <Tab.Screen name="TestedTasks" component={TestedTasksScreen} />
     <Tab.Screen name="Report" component={ReportScreen} />
+=======
+    <Tab.Screen name="Profile" component={ProfileScreen} />
+    <Tab.Screen name="Report" component={ReportUserScreen} />
+>>>>>>> 0415f1e32d8bb0a0899f7f0cca3f9157afe74c06
   </Tab.Navigator>
 );
 
