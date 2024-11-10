@@ -1,7 +1,12 @@
 {
   "expo": {
+<<<<<<< HEAD
     "name": "task-management2",
     "slug": "task-management2",
+=======
+    "name": "task-menagement",
+    "slug": "task-menagement",
+>>>>>>> c21cbaeca5cce5fa9f96fa77448f1b28e82b2fd0
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
