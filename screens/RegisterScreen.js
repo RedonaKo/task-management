@@ -5,21 +5,31 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { Country, State, City } from 'country-state-city';
 import { Picker } from '@react-native-picker/picker';
 import { registerUser } from '../util/firebase';
-import Toast from 'react-native-toast-message';
 import * as ImagePicker from 'expo-image-picker';
-import * as FileSystem from 'expo-file-system';
+import * as FileSystem from 'expo-file-system'; 
+import Toast from 'react-native-toast-message';
 
-const RegisterScreen = ({ navigation }) => {
-  const countryData = Country.getAllCountries();
-  const [country, setCountry] = useState(countryData[0].isoCode);
-  const [state, setState] = useState('');
-  const [city, setCity] = useState('');
-  const [states, setStates] = useState([]);
-  const [cities, setCities] = useState([]);
+
+const RegisterScreen = ({navigation}) => {
+  
+
   const [birthdate, setBirthdate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const [showCountryPicker, setShowCountryPicker] = useState(false);
+
+  const [showCountryPicker, setShowCountryPicker] = useState(false); 
   const [showStatePicker, setShowStatePicker] = useState(false);
+  const [showCityPicker, setShowCityPicker] = useState(false);
+
+
+  const countryData = Country.getAllCountries();
+  const [country, setCountry] = useState(countryData[0].isoCode); 
+  const [state, setState] = useState('');
+  const [city, setCity] = useState('');
+
+  const [states, setStates] = useState([]);
+  const [cities, setCities] = useState([]);
+
+  
 
   const [name, setName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -28,88 +38,96 @@ const RegisterScreen = ({ navigation }) => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errors, setErrors] = useState({});
   const [selectedImage, setSelectedImage] = useState(null);
-  const [base64Image, setBase64Image] = useState(null);
+  const [base64Image, setBase64Image] = useState(null); 
 
-  useEffect(() => {
-    setStates(State.getStatesOfCountry(country));
-    setState('');
-    setCity('');
-  }, [country]);
-
-  useEffect(() => {
-    if (state) {
-      setCities(City.getCitiesOfState(country, state));
-      setCity('');
-    }
-  }, [state]);
+ 
 
   const onDateChange = (event, selectedDate) => {
     setShowDatePicker(false);
     if (selectedDate) {
       setBirthdate(selectedDate);
-    }
+    } 
   };
 
-  // Image Picker Handler
-  const handleChoosePhoto = async () => {
-    try {
-      const cameraPermission = await ImagePicker.requestCameraPermissionsAsync();
-      const mediaLibraryPermission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+  useEffect(() => {
+    const stateData = State.getStatesOfCountry(country);
+    setStates(stateData);
+    setState('');
+    setCity('');
+    setCities([]); 
+  }, [country]);
+  
+  
+  useEffect(() => {
+    if (state) {
+      const cityList = City.getCitiesOfState(country, state); 
+      setCities(cityList);
+      setCity(''); 
+    }
+  }, [state]);
+  
+  
+ // Image Picker Handler
+ const handleChoosePhoto = async () => {
+  try {
+    const cameraPermission = await ImagePicker.requestCameraPermissionsAsync();
+    const mediaLibraryPermission = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
-      if (cameraPermission.status !== 'granted' || mediaLibraryPermission.status !== 'granted') {
-        alert('Permission is required to access the camera and gallery');
-        return;
-      }
+    if (cameraPermission.status !== 'granted' || mediaLibraryPermission.status !== 'granted') {
+      alert('Permission is required to access the camera and gallery');
+      return;
+    }
 
-      const options = ['Take Photo', 'Choose from Gallery', 'Cancel'];
-      const response = await new Promise((resolve) => {
-        Alert.alert('Select an Option', '', [
-          { text: options[0], onPress: () => resolve('camera') },
-          { text: options[1], onPress: () => resolve('gallery') },
-          { text: options[2], onPress: () => resolve('cancel') },
-        ]);
+    const options = ['Take Photo', 'Choose from Gallery', 'Cancel'];
+    const response = await new Promise((resolve) => {
+      Alert.alert('Select an Option', '', [
+        { text: options[0], onPress: () => resolve('camera') },
+        { text: options[1], onPress: () => resolve('gallery') },
+        { text: options[2], onPress: () => resolve('cancel') },
+      ]);
+    });
+
+    if (response === 'cancel') {
+      return;
+    }
+
+    let result;
+
+    if (response === 'camera') {
+      result = await ImagePicker.launchCameraAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
       });
-
-      if (response === 'cancel') {
-        return;
-      }
-
-      let result;
-
-      if (response === 'camera') {
-        result = await ImagePicker.launchCameraAsync({
-          mediaTypes: ImagePicker.MediaTypeOptions.All,
-          allowsEditing: true,
-          aspect: [4, 3],
-          quality: 1,
-        });
-      } else if (response === 'gallery') {
-        result = await ImagePicker.launchImageLibraryAsync({
-          mediaTypes: ImagePicker.MediaTypeOptions.All,
-          allowsEditing: true,
-          aspect: [4, 3],
-          quality: 1,
-        });
-      }
-
-      if (!result.canceled) {
-        setSelectedImage(result.assets[0].uri);
-        await convertToBase64(result.assets[0].uri);
-      }
-    } catch (error) {
-      console.error('Error picking image:', error.message);
+    } else if (response === 'gallery') {
+      result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
     }
-  };
 
-  // Convert Image to Base64
-  const convertToBase64 = async (imageUri) => {
-    try {
-      const base64 = await FileSystem.readAsStringAsync(imageUri, { encoding: FileSystem.EncodingType.Base64 });
-      setBase64Image(base64);
-    } catch (error) {
-      console.log('Error converting image to base64:', error.message);
+    if (!result.canceled) {
+      setSelectedImage(result.assets[0].uri);
+      await convertToBase64(result.assets[0].uri);
     }
-  };
+  } catch (error) {
+    console.error('Error picking image:', error.message);
+  }
+};
+
+// Convert Image to Base64
+const convertToBase64 = async (imageUri) => {
+  try {
+    const base64 = await FileSystem.readAsStringAsync(imageUri, { encoding: FileSystem.EncodingType.Base64 });
+    setBase64Image(base64);
+  } catch (error) {
+    console.log('Error converting image to base64:', error.message);
+  }
+};  
+
 
   // Validation
   const validateInputs = () => {
@@ -131,10 +149,10 @@ const RegisterScreen = ({ navigation }) => {
   };
 
   // Handle submit button 
-  const handleSubmit = async () => {
+  const handleButtonSubmit = async () => {
     if (validateInputs()) {
       try {
-        const token = await registerUser(email, password, name, lastName, birthdate.toISOString(), country, state, city, base64Image);
+        const token = await registerUser(email, password, name, lastName, birthdate.toISOString(), country, state, city, base64Image, 'admin' );
         if (token) {
           Toast.show({
             type: 'success',
@@ -142,6 +160,7 @@ const RegisterScreen = ({ navigation }) => {
             text2: 'User has been registered successfully.'
           });
           console.log('User registered successfully!');
+          navigation.navigate('Login');
         }
       } catch (error) {
         console.error('Error during registration:', error.message);
@@ -151,7 +170,7 @@ const RegisterScreen = ({ navigation }) => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Image source={selectedImage ? { uri: selectedImage } : require('../assets/Image/icon1.png')} style={styles.iconImage} />
+       <Image source={selectedImage ? { uri: selectedImage } : require('../assets/Image/icon1.png')} style={styles.iconImage} />
 
       <TouchableOpacity style={styles.chooseImageButton} onPress={handleChoosePhoto}>
         <Text style={styles.buttonText}>Choose Image</Text>
@@ -191,30 +210,18 @@ const RegisterScreen = ({ navigation }) => {
           />
         )}
 
-        <TouchableOpacity
-          style={styles.pickerInput}
-          onPress={() => setShowCountryPicker(true)}
-        >
+     <TouchableOpacity style={styles.pickerInput} onPress={() => setShowCountryPicker(true)}>
           <Text style={styles.pickerText}>
-            {Country.getCountryByCode(country).name}
+            {Country.getCountryByCode(country)?.name || 'Select Country'}
           </Text>
         </TouchableOpacity>
         {showCountryPicker && (
-          <Modal
-            transparent={true}
-            animationType="slide"
-            visible={showCountryPicker}
-            onRequestClose={() => setShowCountryPicker(false)}
-          >
+          <Modal transparent={true} animationType="slide" visible={showCountryPicker} onRequestClose={() => setShowCountryPicker(false)}>
             <View style={styles.modalContainer}>
-              <Picker
-                selectedValue={country}
-                style={styles.picker}
-                onValueChange={(itemValue) => {
-                  setCountry(itemValue);
-                  setShowCountryPicker(false);
-                }}
-              >
+              <Picker selectedValue={country} style={styles.picker} onValueChange={(itemValue) => {
+                setCountry(itemValue);
+                setShowCountryPicker(false);
+              }}>
                 {countryData.map((item) => (
                   <Picker.Item key={item.isoCode} label={item.name} value={item.isoCode} />
                 ))}
@@ -223,67 +230,67 @@ const RegisterScreen = ({ navigation }) => {
           </Modal>
         )}
 
-        <TouchableOpacity
-          style={styles.pickerInput}
-          onPress={() => setShowStatePicker(true)}
-        >
+ 
+        {states.length > 0 && (
+         <>
+          <TouchableOpacity style={styles.pickerInput} onPress={() => setShowStatePicker(true)}>
           <Text style={styles.pickerText}>
-            {State.getStateByCodeAndCountry(state, country)?.name || 'Select State'}
+            {state ? State.getStateByCodeAndCountry(state, country)?.name : 'Select State'}
           </Text>
-        </TouchableOpacity>
-        {showStatePicker && (
-          <Modal
-            transparent={true}
-            animationType="slide"
-            visible={showStatePicker}
-            onRequestClose={() => setShowStatePicker(false)}
-          >
+           </TouchableOpacity>
+           {showStatePicker && (
+           <Modal transparent={true} animationType="slide" visible={showStatePicker} onRequestClose={() => setShowStatePicker(false)}>
             <View style={styles.modalContainer}>
-              <Picker
-                selectedValue={state}
-                style={styles.picker}
-                onValueChange={(itemValue) => {
-                  setState(itemValue);
-                  setShowStatePicker(false);
-                }}
-              >
+              <Picker selectedValue={state} style={styles.picker} onValueChange={(itemValue) => {
+                setState(itemValue);
+                setShowStatePicker(false);
+              }}>
                 {states.map((item) => (
                   <Picker.Item key={item.isoCode} label={item.name} value={item.isoCode} />
                 ))}
               </Picker>
             </View>
           </Modal>
-        )}
+           )}
+      </>       
+    )}
 
-        <TextInput
-          style={styles.input}
-          placeholder="Email"
-          value={email}
-          onChangeText={setEmail}
-        />
-        {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
+  {cities.length > 0 && (
+     <>
+    <TouchableOpacity style={styles.pickerInput} onPress={() => setShowCityPicker(true)}>
+      <Text style={styles.pickerText}>
+       {city ? city : 'Select City'}
+      </Text>
+    </TouchableOpacity>
+     {showCityPicker && (
+     <Modal  transparent={true}  animationType="slide"  visible={showCityPicker} onRequestClose={() => setShowCityPicker(false)}>
+       <View style={styles.modalContainer}>
+        <Picker selectedValue={city} style={styles.picker} onValueChange={(itemValue) => {
+         setCity(itemValue);
+         setShowCityPicker(false);
+          }}>
+           {cities.map((item) => (
+           <Picker.Item key={`${item.name}-${item.isoCode}`} label={item.name} value={item.name} />
+              ))}
+        </Picker>
+       </View>
+     </Modal>
+     )}
+     </>
+    )}
+        <TextInput style={styles.input}  placeholder="Email"  value={email}  onChangeText={setEmail} />
+             {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
 
-        <TextInput
-          style={styles.input}
-          placeholder="Password"
-          secureTextEntry
-          value={password}
-          onChangeText={setPassword}
-        />
-        {errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
+        <TextInput  style={styles.input}  placeholder="Password"  secureTextEntry  value={password}  onChangeText={setPassword}/>
+             {errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
 
-        <TextInput
-          style={styles.input}
-          placeholder="Confirm Password"
-          secureTextEntry
-          value={confirmPassword}
-          onChangeText={setConfirmPassword}
-        />
+        <TextInput style={styles.input}  placeholder="Confirm Password"  secureTextEntry  value={confirmPassword}  onChangeText={setConfirmPassword}/>
         {errors.confirmPassword && <Text style={styles.errorText}>{errors.confirmPassword}</Text>}
 
-        <TouchableOpacity style={styles.submitButton} onPress={(handleSubmit) => navigation.navigate('Home')}>
+        <TouchableOpacity style={styles.submitButton} onPress={handleButtonSubmit}>
           <Text style={styles.buttonText}>Submit</Text>
-        </TouchableOpacity>
+         </TouchableOpacity>
+ 
       </View>
     </ScrollView>
   );
@@ -405,6 +412,3 @@ const styles = StyleSheet.create({
 });
 
 export default RegisterScreen;
-
-
-

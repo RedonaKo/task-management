@@ -106,9 +106,9 @@ export default function ResetPw({ navigation }) {
                     onChangeText={setConfirmPassword}
                 />
 
-                < TouchableOpacity style={styles.btn} onPress={handleResetPassword}>
+                <TouchableOpacity style={styles.btn} onPress={handleResetPassword}>
                     <Text style={styles.txt}>Reset</Text>
-                </TouchableOpacity >
+                </TouchableOpacity>
 
             </View>
         </ScrollView>
